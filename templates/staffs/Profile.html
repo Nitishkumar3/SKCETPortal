@@ -1,0 +1,602 @@
+<!doctype html>
+<html class="h-full bg-white dark:bg-gray-900 dark:text-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../assets/output3.css" rel="stylesheet">
+  <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    body {
+        font-family: "Inter", sans-serif;
+    }
+  </style>
+</head>
+<body class="h-full">
+  <div>
+  <!-- Mobile Menu -->
+  <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/80"></div>
+    <div class="fixed inset-0 flex">
+      <div class="relative mr-16 flex w-full max-w-xs flex-1">
+        <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+          <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+            <span class="sr-only">Close sidebar</span>
+            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sidebar component, swap this element with another sidebar if you like -->
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 dark:bg-gray-900 ring-1 ring-white/10">
+          <div class="flex h-16 shrink-0 items-center">
+            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company">
+          </div>
+          <nav class="flex flex-1 flex-col">
+            <ul role="list" class="flex flex-1 flex-col gap-y-7">
+              <li>
+                <ul role="list" class="-mx-2 space-y-1">
+                  <li>
+                    <a href="#" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-house fa-lg"></i> Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-sitemap fa-lg"></i> Accounts
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-display fa-lg"></i> Sessions
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-address-card fa-lg"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-folder fa-lg"></i> Documents
+                    </a>
+                  </li>                  
+                  <li>
+                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-badge-check fa-lg"></i> Verification
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <li class="mt-auto">
+                <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-white hover:bg-indigo-700 dark:hover:bg-gray-800 hover:text-white items-center">
+                  <i class="fa-regular fa-gear fa-lg text-white"></i> Settings
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Static Sidebar for Desktop -->
+  <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 dark:bg-gray-900 ring-1 ring-white/10">
+      <div class="flex h-16 shrink-0 items-center">
+        <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company">
+      </div>
+      <nav class="flex flex-1 flex-col">
+        <ul role="list" class="flex flex-1 flex-col gap-y-7">
+          <li>
+            <ul role="list" class="-mx-2 space-y-1">
+              <li>
+                <a href="#" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-house fa-lg"></i> Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-sitemap fa-lg"></i> Accounts
+                </a>
+              </li>
+              <li>
+                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 items-center group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-display fa-lg"></i> Sessions
+                </a>
+              </li>
+              <li>
+                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-address-card fa-lg"></i> Profile
+                </a>
+              </li>
+              <li>
+                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-folder fa-lg"></i> Documents
+                </a>
+              </li>
+              <li>
+                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-badge-check fa-lg"></i> Verification
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="mt-auto">
+            <a href="#" class="group -mx-2 flex gap-x-3 items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 dark:hover:bg-gray-800 text-white">
+              <i class="fa-regular fa-gear fa-lg text-white"></i> Settings
+            </a>
+          </li> 
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="lg:pl-72">
+    <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-900 dark:border-white/10">
+      <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+        <span class="sr-only">Open sidebar</span>
+        <i class="fa-regular fa-bars fa-lg dark:text-white"></i>
+      </button>
+
+      <!-- Separator -->
+      <!-- <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div> -->
+
+      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+        <div class="relative flex flex-1"></div>
+        <div class="flex items-center gap-x-4 lg:gap-x-6">
+          
+
+
+
+          <!-- Separator -->
+          <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
+
+          <!-- Profile dropdown -->
+          <div class="relative">
+            <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+              <span class="sr-only">Open user menu</span>
+               <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt=""> <!-- https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80 -->
+              <span class="hidden lg:flex lg:items-center">
+                <span class="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-white" aria-hidden="true">{{name}}</span>
+                <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400 dark:text-white"></i>
+              </span>
+            </button>
+            <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+              <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="py-10">
+      <div class="px-4 sm:px-6 lg:px-8">
+        <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+            <div class="flex items-center justify-between py-2">
+                <h2 class="font-semibold text-gray-900 text-xl">Profile</h2>
+                <a href="/profile/edit" class="bg-indigo-600 text-white py-2 px-4 rounded">Edit Profile</a>
+            </div>
+            <hr class="py-2">
+            
+              <div class="space-y-12">
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Details</h2>
+                      </div>
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First Name</label>
+                                <div class="mt-2">{{data.first_name}}</div>
+                                <p class="mt-2 text-sm text-red-600" id="first-name-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                                <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last Name</label>
+                                <div class="mt-2">{{data.last_name}}</div>
+                                <p class="mt-2 text-sm text-red-600" id="last-name-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                                <label for="register-number" class="block text-sm font-medium leading-6 text-gray-900">Register Number</label>
+                                <div class="mt-2">{{data.RollNumber}}</div>
+                                <p class="mt-2 text-sm text-red-600" id="register-number-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="mobile-number" class="block text-sm font-medium leading-6 text-gray-900">Mobile Number</label>
+                              <div class="mt-2">{{data.mobile_number}}</div>
+                              <p class="mt-2 text-sm text-red-600" id="mobile-number-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
+                              <div class="mt-2">{{data.gender}}</div>
+                              <p class="mt-2 text-sm text-red-600" id="gender-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="dob" class="block text-sm font-medium leading-6 text-gray-900">Date of Birth</label>
+                              <div class="mt-2">{{ data.dob }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="dob-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="personal-email"
+                                  class="block text-sm font-medium leading-6 text-gray-900">Personal Email ID</label>
+                              <div class="mt-2">{{ data.personal_email }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="personal-email-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="college-email" class="block text-sm font-medium leading-6 text-gray-900">College Email ID</label>
+                              <div class="mt-2">{{ data.Email }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="college-email-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="first-graduate" class="block text-sm font-medium leading-6 text-gray-900">First Graduate</label>
+                              <div class="mt-2">{{ data.first_graduate }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="first-graduate-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="emis-number" class="block text-sm font-medium leading-6 text-gray-900">HSC School EMIS Number</label>
+                              <div class="mt-2">{{ data.emis_number }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="emis-number-error"></p>
+                          </div>
+                          <div class="sm:col-span-2 sm:col-start-1">
+                              <label for="religion" class="block text-sm font-medium leading-6 text-gray-900">Religion</label>
+                              <div class="mt-2">{{ data.religion }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="religion-error"></p>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="community" class="block text-sm font-medium leading-6 text-gray-900">Community</label>
+                              <div class="mt-2">{{ data.community }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="community-error"></p>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="sub-caste" class="block text-sm font-medium leading-6 text-gray-900">Sub - Caste</label>
+                              <div class="mt-2">{{ data.sub_caste }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="sub-caste-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="nationality" class="block text-sm font-medium leading-6 text-gray-900">Nationality</label>
+                              <div class="mt-2">{{ data.nationality }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="nationality-error"></p>
+                          </div>
+                          <div class="sm:col-span-3" id="country-name-container" {% if data.nationality == 'India' %} style="display: none;" {% endif %}>
+                              <label for="country-name" class="block text-sm font-medium leading-6 text-gray-900">Country Name</label>
+                              <div class="mt-2">{{ data.country_name }}</div>
+                              <p class="mt-2 text-sm text-red-600" id="country-name-error"></p>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Government IDs</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label for="aadhaar-number" class="block text-sm font-medium leading-6 text-gray-900">Aadhaar Number</label>
+                              <div class="mt-2">{{data.aadhaar_number}}</div>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="pan-number" class="block text-sm font-medium leading-6 text-gray-900">PAN Number</label>
+                              <div class="mt-2">{{data.pan_number}}</div>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="voter-id" class="block text-sm font-medium leading-6 text-gray-900">Voter ID</label>
+                              <div class="mt-2">{{data.voter_id}}</div>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Address</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="col-span-full">
+                              <label for="permanent-address" class="block text-sm font-medium leading-6 text-gray-900">Permanent Address</label>
+                              <div class="mt-2">{{data.permanent_address}}</div>
+                          </div>
+                          <div class="sm:col-span-2 sm:col-start-1">
+                              <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
+                              <div class="mt-2">{{data.city}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="state" class="block text-sm font-medium leading-6 text-gray-900">State</label>
+                              <div class="mt-2">{{data.state}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">PIN code</label>
+                              <div class="mt-2">{{data.postal_code}}</div>
+                          </div>
+                          <div class="col-span-full">
+                              <label for="communication-address"
+                                  class="block text-sm font-medium leading-6 text-gray-900">Communication Address</label>
+                              <div class="mt-2">{{data.communication_address}}</div>
+                          </div>
+                          <div class="sm:col-span-2 sm:col-start-1">
+                              <label for="communication-city"
+                                  class="block text-sm font-medium leading-6 text-gray-900">City</label>
+                              <div class="mt-2">{{data.communication_city}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="communication-state"
+                                  class="block text-sm font-medium leading-6 text-gray-900">State</label>
+                              <div class="mt-2">{{data.communication_state}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="communication-postal-code"
+                                  class="block text-sm font-medium leading-6 text-gray-900">PIN code</label>
+                              <div class="mt-2">{{data.communication_postal_code}}</div>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Parent Details</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                        
+                          <div class="sm:col-span-3" {% if data.father_name == '' %} style="display: none;" {% endif %}>
+                              <label for="father-name" class="block text-sm font-medium leading-6 text-gray-900">Father's Name</label>
+                              <div class="mt-2">{{data.father_name}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.father_mobile == '' %} style="display: none;" {% endif %}>
+                              <label for="father-mobile" class="block text-sm font-medium leading-6 text-gray-900">Father's Mobile Number</label>
+                              <div class="mt-2">{{data.father_mobile}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3" {% if data.mother_name == '' %} style="display: none;" {% endif %}>
+                              <label for="mother-name" class="block text-sm font-medium leading-6 text-gray-900">Mother's Name</label>
+                              <div class="mt-2">{{data.mother_name}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.mother_mobile == '' %} style="display: none;" {% endif %}>
+                              <label for="mother-mobile" class="block text-sm font-medium leading-6 text-gray-900">Mother's Mobile Number</label>
+                              <div class="mt-2">{{data.mother_mobile}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3" {% if data.father_occupation == '' %} style="display: none;" {% endif %}>
+                              <label for="father-occupation" class="block text-sm font-medium leading-6 text-gray-900">Father's Occupation</label>
+                              <div class="mt-2">{{data.father_occupation}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.mother_occupation == '' %} style="display: none;" {% endif %}>
+                              <label for="mother-occupation" class="block text-sm font-medium leading-6 text-gray-900">Mother's Occupation</label>
+                              <div class="mt-2">{{ data.mother_occupation }}</div>
+                          </div>
+              
+                          <div class="sm:col-span-3" {% if data.guardian_name == '' %} style="display: none;" {% endif %}>
+                              <label for="guardian-name" class="block text-sm font-medium leading-6 text-gray-900">Guardian's Name</label>
+                              <div class="mt-2">{{ data.guardian_name }}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.guardian_mobile == '' %} style="display: none;" {% endif %}>
+                              <label for="guardian-mobile" class="block text-sm font-medium leading-6 text-gray-900">Guardian's Mobile Number</label>
+                              <div class="mt-2">{{ data.guardian_mobile }}</div>
+                          </div>
+                       
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Orphan</label>
+                              <div class="mt-2">{{ data.orphan }}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label for="annual-income" class="block text-sm font-medium leading-6 text-gray-900">Annual Family Income</label>
+                              <div class="mt-2">{{ data.annual_income }}</div>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Health Details</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-2">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Health Issues</label>
+                              <div class="mt-2">{{ data.health_issues }}</div>
+                          </div>
+  
+                          <div class="sm:col-span-4" {% if data.health_issues_details == '' %} style="display: none;" {% endif %}>
+                              <label for="health-issues-details"
+                                  class="block text-sm font-medium leading-6 text-gray-900">Issues</label>
+                              <div class="mt-2">{{ data.health_issues_details }}</div>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Differently Abled</h2>                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Differently Abled</label>
+                              <div class="mt-2">{{data.differently_abled}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.differently_abled == 'No' %} style="display: none;" {% endif %}>
+                              <label for="disability-type" class="block text-sm font-medium leading-6 text-gray-900">Type of Differently abled</label>
+                              <div class="mt-2">{{data.disability_type}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3" {% if data.differently_abled == 'No' %} style="display: none;" {% endif %}>
+                              <label for="disability-percentage"
+                                  class="block text-sm font-medium leading-6 text-gray-900">Disability Percentage</label>
+                              <div class="mt-2">{{data.disability_percentage}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.differently_abled == 'No' %} style="display: none;" {% endif %}>
+                              <label for="udid" class="block text-sm font-medium leading-6 text-gray-900">UDID</label>
+                              <div class="mt-2">{{data.udid}}</div>
+                          </div>
+  
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Bank Details</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-4">
+                              <label for="bank-account-name" class="block text-sm font-medium leading-6 text-gray-900">Name (as in Bank account)</label>
+                              <div class="mt-2">{{data.bank_account_name}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label for="bank-name" class="block text-sm font-medium leading-6 text-gray-900">Bank Name</label>
+                              <div class="mt-2">{{data.bank_name}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label for="branch" class="block text-sm font-medium leading-6 text-gray-900">Branch</label>
+                              <div class="mt-2">{{data.branch}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label for="account-number"
+                                  class="block text-sm font-medium leading-6 text-gray-900">Account Number</label>
+                              <div class="mt-2">{{data.account_number}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label for="ifsc-code" class="block text-sm font-medium leading-6 text-gray-900">IFSC code</label>
+                              <div class="mt-2">{{data.ifsc_code}}</div>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Admission Details</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-2">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Degree</label>
+                              <div class="mt-2">{{data.degree}}</div>
+                          </div>
+                          <div class="sm:col-span-4">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Department</label>
+                              <div class="mt-2">{{data.department}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-2">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Year</label>
+                              <div class="mt-2">{{data.year}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Section</label>
+                              <div class="mt-2">{{data.section}}</div>
+                          </div>
+                          <div class="sm:col-span-2">
+                              <label for="batch" class="block text-sm font-medium leading-6 text-gray-900">Batch</label>
+                              <div class="mt-2">{{data.batch}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Admission mode</label>
+                              <div class="mt-2">{{data.admission_mode}}</div>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">7.5 Quota</label>
+                              <div class="mt-2">{{data.quota}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Course Type</label>
+                              <div class="mt-2">{{data.course_type}}</div>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Lateral Entry</label>
+                              <div class="mt-2">{{data.lateral_entry}}</div>
+                          </div>
+  
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900">Date of Admission</label>
+                              <div class="mt-2">{{data.date_of_admission}}</div>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="tnea-application-number"
+                                  class="block text-sm font-medium leading-6 text-gray-900">TNEA Application Number</label>
+                              <div class="mt-2">{{data.tnea_application_number}}</div>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                      <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Hostel Details</h2>
+                      </div>
+  
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900"
+                                  for="hosteller">Hosteller</label>
+                              <div class="mt-2">{{data.hosteller}}</div>
+                          </div>
+                          <div class="sm:col-span-3" {% if data.hosteller != 'Yes' %} style="display: none;" {% endif %}>
+                              <label class="block text-sm font-medium leading-6 text-gray-900" for="hostel-type">Hostel Type</label>
+                              <div class="mt-2">{{data.hostel_type}}</div>
+                          </div>
+                          <div class="col-span-full" {% if data.hosteller != 'Outside PG' %} style="display: none;" {% endif %}>
+                              <label for="pg-address" class="block text-sm font-medium leading-6 text-gray-900">PG Address</label>
+                              <div class="mt-2">{{data.pg_address}}</div>
+                          </div>
+                      </div>
+                  </div>
+  
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                        <div>
+                          <h2 class="text-base font-semibold leading-7 text-gray-900">Status</h2>                      
+                        </div>
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label class="block text-sm font-medium leading-6 text-gray-900" for="status">Status</label>
+                              <div class="mt-2">{{data.status}}</div>
+                          </div>
+                      </div>
+                    </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-menu');
+
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        button.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+      }
+    });
+  });
+</script>
+<script>
+  // Open Mobile Menu
+  var closeButton = document.getElementById('OpenButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
+
+  // Close Mobile Menu
+  var closeButton = document.getElementById('CloseButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
+</script>
+</body>
+</html>

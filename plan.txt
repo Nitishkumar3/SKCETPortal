@@ -1,0 +1,20 @@
+- Login
+- Register (Clg Mail)
+
+# Student
+
+Student Details
+- Profile (intimate to fill all Details if unfilled)
+- Edit Details
+
+Hackathon Participation Details
+- Add Participation
+- Edit Participation
+- Update Participation
+- Delete Participation
+[Event Name, Date, Venue, Team Details, Participation/Win, Position, Prize Amount, Event Photos, Certificate Photos]
+
+# Admin
+- View all Students Details
+- Update Students Details
+- View Hackathon Participation Details

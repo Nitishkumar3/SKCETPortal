@@ -1,0 +1,390 @@
+from flask import render_template, request, redirect, url_for, session, flash, send_from_directory, Blueprint
+from dotenv import load_dotenv
+from functools import wraps
+from datetime import datetime, timedelta, timezone
+from Modules import AES256, SHA256, Mail
+import re
+import secrets
+import string
+from db import mongo
+
+StudentsBP = Blueprint('students', __name__)
+
+def LoggedInUser(view_func):
+    @wraps(view_func)
+    def decorated_function(*args, **kwargs):
+        if 'SessionKey' in session and 'RollNumber' in session:
+            session_key = session['SessionKey']
+            roll_number = session['RollNumber']
+            user_session = mongo.db.UserSessions.find_one({
+                'SessionKey': session_key,
+                'RollNumber': roll_number,
+                'ExpirationTime': {'$gt': datetime.now(timezone.utc)}
+            })
+            if user_session:
+                return view_func(*args, **kwargs)
+            else:
+                session.clear()
+                flash('Session expired or invalid. Please log in again.', 'error')
+                return redirect(url_for('students.Login'))
+        else:
+            flash('Please log in to access this page.', 'error')
+            return redirect(url_for('students.Login'))
+    return decorated_function
+
+def NotLoggedInUser(view_func):
+    @wraps(view_func)
+    def decorated_function(*args, **kwargs):
+        if 'SessionKey' in session and 'RollNumber' in session:
+            return redirect(url_for('Index'))
+        return view_func(*args, **kwargs)
+    return decorated_function
+
+def GenerateSessionKey(length=32):
+    SessionKey = secrets.token_hex(length // 2)
+    return SessionKey
+
+def GenerateVerificationCode(length=32):
+    characters = string.ascii_letters + string.digits
+    VerificationCode = ''.join(secrets.choice(characters) for _ in range(length))
+    return VerificationCode
+
+def SendVerificationEmail(rollnumber, email, VerificationCode):
+    subject = "SKCET - Verify your Account"
+    body = "Verification Code: " + str(VerificationCode)
+    if Mail.SendMail(subject, body, email):
+        mongo.db.StudentVerification.insert_one({'RollNumber': rollnumber, 'VerificationCode': VerificationCode, 'Verified': False})
+
+def IsUserVerified(rollnumber):
+    VerifiedStatus = mongo.db.StudentVerification.find_one({'RollNumber': rollnumber, 'Verified': True})
+    return VerifiedStatus is not None
+
+def PasswordResetMail(rollnumber, email, ResetKey):
+    subject = "SKCET - Password Reset"
+    link = "http://localhost:5000/resetkey/" + str(ResetKey)
+    body = "Password Reset Code: " + str(ResetKey) + f" {link}"
+    if Mail.SendMail(subject, body, email):
+        currenttime = datetime.utcnow()
+        mongo.db.PasswordReset.insert_one({'RollNumber': rollnumber, 'ResetKey': ResetKey, 'CreatedAt': currenttime, 'ExpirationTime': currenttime + timedelta(hours=6)})
+        mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
+
+@StudentsBP.route('/register', methods=['GET', 'POST'])
+@NotLoggedInUser
+def Registration():
+    if request.method == 'POST':
+        name =  request.form['name']
+        email =  request.form['email']
+        password = request.form['password']
+        rollnumber = email.split("@")[0]
+    
+        PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$', password) else True
+        ExistingEmailID = True if mongo.db.StudentDetails.find_one({'Email': email}) else False
+
+        if PasswordCheck  or ExistingEmailID:
+            ErrorMessages = []
+            if PasswordCheck:
+                ErrorMessages.append('Invalid password. It should be at least 8 characters and contain at least one lowercase letter, one uppercase letter, one special character, and one number.')
+            if ExistingEmailID:
+                ErrorMessages.append('Email ID already Registered. Try Logging in.')
+            flash(ErrorMessages, 'error')
+            return redirect(url_for('students.Registration'))
+
+        passwordH = SHA256.HashPassword(password, rollnumber)
+
+        SendVerificationEmail(rollnumber, email, GenerateVerificationCode())
+
+        mongo.db.StudentDetails.insert_one({
+            'RollNumber': rollnumber,
+            'first_name': name, 
+            'Email': email, 
+            'Password': passwordH, 
+        })
+
+
+        return redirect(url_for('students.VerifyAccount', rollnumber=rollnumber))
+    return render_template('students/Register.html')
+
+@StudentsBP.route('/verifyaccount/<rollnumber>', methods=['GET', 'POST'])
+@NotLoggedInUser
+def VerifyAccount(rollnumber):
+    if request.method == 'POST':
+        EnteredVerificationCode = request.form['VerificationCode']
+        VerificationAccount = mongo.db.StudentVerification.find_one({'RollNumber': rollnumber, 'Verified': False})
+
+        if not VerificationAccount:
+            flash('Account not Found or it is Already Verified', 'error')
+            return redirect(url_for('students.Login', rollnumber=rollnumber))
+
+        if EnteredVerificationCode == VerificationAccount['VerificationCode']:
+            mongo.db.StudentVerification.update_one({'RollNumber': rollnumber}, {'$set': {'Verified': True}})
+            return redirect(url_for('students.Login'))
+        else:
+            flash('Invalid Code. Please try again.', 'error')
+            return redirect(url_for('students.VerifyAccount', rollnumber=rollnumber))
+
+    return render_template('students/VerifyAccount.html', rollnumber=rollnumber)
+
+@StudentsBP.route('/login', methods=['GET', 'POST'])
+@NotLoggedInUser
+def Login():
+    if request.method == 'POST':
+        login = request.form['login']
+        password = request.form['password']
+
+        currenttime = datetime.now(timezone.utc)
+
+        if "@" in login:
+            user = mongo.db.StudentDetails.find_one({'Email': login})
+        else:
+            user = mongo.db.StudentDetails.find_one({'RollNumber': login})
+
+        if not user:
+            flash('Invalid Login or Password', 'error')
+            return redirect(url_for('students.Login'))
+        
+        if not IsUserVerified(user["RollNumber"]):
+            flash('User not verified! Please complete the OTP verification', 'error')
+            return redirect(url_for('students.VerifyAccount', rollnumber=user["RollNumber"]))
+
+        if SHA256.CheckPassword(password, user["Password"], user["RollNumber"]):
+            sessionkey = GenerateSessionKey()  
+            mongo.db.UserSessions.insert_one({
+                'SessionKey': sessionkey,
+                'RollNumber': user["RollNumber"],
+                'CreatedAt': currenttime,
+                'ExpirationTime': currenttime + timedelta(hours=6)
+            }) 
+            mongo.db.UserSessions.create_index('ExpirationTime', expireAfterSeconds=0)
+
+            session['SessionKey'] = sessionkey
+            session['RollNumber'] = user["RollNumber"]
+
+            return redirect(url_for('Index'))
+        else:
+            flash('Invalid Login or password', 'error')
+    return render_template('students/Login.html')
+
+@StudentsBP.route('/forgotpassword', methods=['GET', 'POST'])
+@NotLoggedInUser
+def ForgotPassword():
+    if request.method == 'POST':
+        login = request.form['login']
+
+        if "@" in login:
+            user = mongo.db.StudentDetails.find_one({'Email': login})
+        else:
+            user = mongo.db.StudentDetails.find_one({'RollNumber': login})
+
+        if not user:
+            flash('Invalid Username or Email ID', 'error')
+            return redirect(url_for('students.ForgotPassword'))
+
+        ResetKey = AES256.GenerateRandomString(32)
+        PasswordResetMail(user["RollNumber"], user["Email"], ResetKey)
+
+        flash('A Password Reset Link has been sent to your Email! Please check your Inbox and Follow the Instructions', 'info')
+    return render_template('students/ForgotPassword.html')
+
+@StudentsBP.route('/resetkey/<ResetKey>', methods=['GET', 'POST'])
+@NotLoggedInUser
+def ResetPassword(ResetKey):
+    if request.method == 'POST':
+        NewPassword = request.form['password']
+            
+        ResetData = mongo.db.PasswordReset.find_one({'ResetKey': ResetKey})
+
+        if not ResetData:
+            flash('Invalid or Expired reset link. Please initiate the password reset process again.', 'error')
+        
+        PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$', NewPassword) else True
+
+        if PasswordCheck:
+            flash('Invalid password. It should be at least 8 characters and contain at least one lowercase letter, one uppercase letter, one special character, and one number.', 'error')
+            return redirect(url_for('students.ResetPassword', ResetKey=ResetKey))
+        
+        user = mongo.db.StudentDetails.find_one({'RollNumber': ResetData['RollNumber']})
+
+        passwordH = SHA256.HashPassword(NewPassword, user["RollNumber"])
+
+        mongo.db.StudentDetails.update_one({'RollNumber': ResetData['RollNumber']}, {'$set': {'Password': passwordH}})
+
+        mongo.db.PasswordReset.delete_one({'ResetKey': ResetKey})
+        
+        flash('Password reset successful. Try Loggin in.', 'info')
+        return redirect(url_for('students.Login'))
+    return render_template('students/ResetPassword.html', ResetKey=ResetKey)
+
+@StudentsBP.route('/logout')
+@LoggedInUser
+def Logout():
+    session_key = session['SessionKey']
+    roll_number = session['RollNumber']
+    mongo.db.UserSessions.delete_one({
+        'SessionKey': session_key,
+        'RollNumber': roll_number
+    })
+    session.clear()
+    return redirect(url_for('Index'))
+
+@StudentsBP.route('/profile')
+@LoggedInUser
+def Profile():
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    if user:
+        # decrypted_data = {}
+        # for key, value in user.items():
+        #     if key not in ["_id", "RollNumber", "Email", "Password"]:
+        #         decrypted_data[f"{key}"] = AES256.Decrypt(value, AES256.DeriveKey(rollnumber, f"{key}"))
+        #     elif key in ["RollNumber", "Email"]:
+        #         decrypted_data[f"{key}"] = value
+        # name = decrypted_data["first_name"]
+        # if decrypted_data.get("last_name"):
+        #     name += " " + decrypted_data["last_name"]
+        name = user["first_name"]
+        if user.get("last_name"):
+            name += " " + user["last_name"]
+        return render_template('students/Profile.html', data = user, name = name)
+    else:
+        flash('User not found.', 'error')
+        return redirect(url_for('students.Login'))
+
+@StudentsBP.route('/profile/edit', methods=['GET', 'POST'])
+@LoggedInUser
+def EditProfile():
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+
+    if request.method == 'POST':
+        personal_details = {
+            'first_name': request.form.get('first-name', ''),
+            'last_name': request.form.get('last-name', ''),
+            'RollNumber': request.form.get('register-number', ''),
+            'mobile_number': request.form.get('mobile-number', ''),
+            'gender': request.form.get('gender', ''),
+            'dob': request.form.get('dob', ''),
+            'personal_email': request.form.get('personal-email', ''),
+            'Email': request.form.get('college-email', ''),
+            'first_graduate': request.form.get('first-graduate', ''),
+            'emis_number': request.form.get('emis-number', ''),
+            'religion': request.form.get('religion', ''),
+            'community': request.form.get('community', ''),
+            'sub_caste': request.form.get('sub-caste', ''),
+            'nationality': request.form.get('nationality', ''),
+            'country_name': request.form.get('country-name', 'India')
+        }
+
+        government_ids = {
+            'aadhaar_number': request.form.get('aadhaar-number', ''),
+            'pan_number': request.form.get('pan-number', ''),
+            'voter_id': request.form.get('voter-id', '')
+        }
+        
+        address = {
+            'permanent_address': request.form.get('permanent-address', ''),
+            'city': request.form.get('city', ''),
+            'state': request.form.get('state', ''),
+            'postal_code': request.form.get('postal-code', ''),
+            'communication_address': request.form.get('communication-address', ''),
+            'communication_city': request.form.get('communication-city', ''),
+            'communication_state': request.form.get('communication-state', ''),
+            'communication_postal_code': request.form.get('communication-postal-code', ''),
+        }  
+
+        parent_details = {
+            'father_name': request.form.get('father-name', ''),
+            'father_mobile': request.form.get('father-mobile', ''),
+            'mother_name': request.form.get('mother-name', ''),
+            'mother_mobile': request.form.get('mother-mobile', ''),
+            'father_occupation': request.form.get('father-occupation', ''),
+            'mother_occupation': request.form.get('mother-occupation', ''),
+            'guardian_name': request.form.get('guardian-name', ''),
+            'guardian_mobile': request.form.get('guardian-mobile', ''),
+            'orphan': request.form.get('orphan', ''),
+            'annual_income': request.form.get('annual-income', '')
+        }
+
+        health_details = {
+            'health_issues': request.form.get('health-issues', ''),
+            'health_issues_details': request.form.get('health-issues-details', '')
+        }
+
+        disability = { 
+            'differently_abled': request.form.get('differently-abled', ''),
+            'disability_type': request.form.get('disability-type', ''),
+            'disability_percentage': request.form.get('disability-percentage', ''),
+            'udid': request.form.get('udid', '')
+        }
+
+        bank_details = {
+            'bank_account_name': request.form.get('bank-account-name', ''),
+            'bank_name': request.form.get('bank-name', ''),
+            'branch': request.form.get('branch', ''),
+            'account_number': request.form.get('account-number', ''),
+            'ifsc_code': request.form.get('ifsc-code', '')
+        }
+
+        admission_details = {
+            'degree': request.form['degree'],
+            'department': request.form['department'],
+            'year': request.form['year'],
+            'section': request.form['section'],
+            'batch': request.form['batch'],
+            'admission_mode': request.form['admission-mode'],
+            'quota': request.form['quota'],
+            'course_type': request.form['course-type'],
+            'lateral_entry': request.form['lateral-entry'],
+            'date_of_admission': request.form['date-of-admission'],
+            'tnea_application_number': request.form['tnea-application-number'],
+        }
+
+        hostel_details = {
+            'hosteller': request.form['hosteller'],
+            'hostel_type': request.form['hostel-type'],
+            'pg_address': request.form['pg-address']
+        }
+
+        status = {
+            'status': request.form['status']
+        }
+
+        data = {}
+
+        data.update(personal_details)
+        data.update(government_ids)
+        data.update(address)
+        data.update(parent_details)
+        data.update(health_details)
+        data.update(disability)
+        data.update(bank_details)
+        data.update(admission_details)
+        data.update(hostel_details)
+        data.update(status)
+
+        # encrypted_data = {}
+        # for key, value in data.items():
+        #     if key not in ["_id", "RollNumber", "Email", "Password"]:
+        #         encrypted_data[f"{key}"] = AES256.Encrypt(value, AES256.DeriveKey(rollnumber, f"{key}"))
+        #     elif key in ["RollNumber", "Email"]:
+        #         encrypted_data[f"{key}"] = value
+
+        # Upsert data into the database
+        mongo.db.StudentDetails.update_one({'RollNumber': rollnumber}, {'$set': data}, upsert=True) # encrypted_data -> data
+
+        return redirect(url_for('students.Profile'))
+    elif request.method == 'GET':
+
+        # decrypted_data = {}
+        # for key, value in user.items():
+        #     if key not in ["_id", "RollNumber", "Email", "Password"]:
+        #         decrypted_data[f"{key}"] = AES256.Decrypt(value, AES256.DeriveKey(rollnumber, f"{key}"))
+        #     elif key in ["RollNumber", "Email"]:
+        #         decrypted_data[f"{key}"] = value
+        # name = decrypted_data["first_name"]
+        # if decrypted_data.get("last_name"):
+        #     name += " " + decrypted_data["last_name"]
+        name = user["first_name"]
+        if user.get("last_name"):
+            name += " " + user["last_name"]
+        return render_template('students/EditProfile.html', data = user, name = name)
+    
