@@ -1,4 +1,6 @@
 from flask import render_template, request, redirect, url_for, session, flash, send_from_directory, Blueprint
+from werkzeug.utils import secure_filename
+import os
 from dotenv import load_dotenv
 from functools import wraps
 from datetime import datetime, timedelta, timezone
@@ -7,6 +9,7 @@ import re
 import secrets
 import string
 from db import mongo
+
 
 StudentsBP = Blueprint('students', __name__)
 
@@ -387,4 +390,61 @@ def EditProfile():
         if user.get("last_name"):
             name += " " + user["last_name"]
         return render_template('students/EditProfile.html', data = user, name = name)
-    
+
+@StudentsBP.route('/hackathons')
+@LoggedInUser
+def Hackathons():
+    return "1"
+
+# @StudentsBP.route('/hackathons/add')
+# @LoggedInUser
+# def HackathonsAdd():
+#     return "1"
+
+UPLOAD_FOLDER = 'static/uploads'
+EVENT_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'eventpics')
+CERTIFICATE_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'certificatepics')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@StudentsBP.route('/hackathons/add', methods=['GET', 'POST'])
+@LoggedInUser
+def HackathonsAdd():
+    if request.method == 'POST':
+        event_data = {
+            'event_name': request.form['event_name'],
+            'date': request.form['date'],
+            'venue': request.form['venue'],
+            'team_details': request.form['team_details'],
+            'status': request.form['status'],
+            'participated_won': request.form['participated_won'],
+            'position': request.form['position'],
+            'prize_amount': request.form['prize_amount'],
+            'event_photos': [],
+            'certificate_photos': []
+        }
+
+        # Handle event photos
+        event_photos = request.files.getlist('event_photos')
+        for photo in event_photos[:5]:  # Limit to 5 photos
+            if photo and allowed_file(photo.filename):
+                filename = secure_filename(photo.filename)
+                photo.save(os.path.join(EVENT_PICS_FOLDER, filename))
+                event_data['event_photos'].append(filename)
+
+        # Handle certificate photos
+        certificate_photos = request.files.getlist('certificate_photos')
+        for photo in certificate_photos[:5]:  # Limit to 5 photos
+            if photo and allowed_file(photo.filename):
+                filename = secure_filename(photo.filename)
+                photo.save(os.path.join(CERTIFICATE_PICS_FOLDER, filename))
+                event_data['certificate_photos'].append(filename)
+
+        # Insert data into MongoDB
+        mongo.db.HackathonParticipations.insert_one(event_data)
+
+        return redirect(url_for('HackathonsAdd'))
+
+    return render_template('students/HackathonsAdd.html')

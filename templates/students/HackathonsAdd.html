@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details Form</title>
+</head>
+<body>
+    <h1>Event Details Form</h1>
+    <form action="{{ url_for('students.HackathonsAdd') }}" method="POST" enctype="multipart/form-data">
+        <label for="event_name">Event Name:</label>
+        <input type="text" id="event_name" name="event_name" required><br><br>
+
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+
+        <label for="venue">Venue:</label>
+        <input type="text" id="venue" name="venue" required><br><br>
+
+        <label for="team_details">Team Details:</label>
+        <textarea id="team_details" name="team_details" required></textarea><br><br>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status" required>
+            <option value="Registered">Registered</option>
+            <option value="Event Completed">Event Completed</option>
+        </select><br><br>
+
+        <label for="status">Participated/Won:</label>
+        <select id="status" name="status" required>
+            <option value="Participated">Participated</option>
+            <option value="Won">Won</option>
+        </select><br><br>
+
+        <label for="participated_won">Participated/Won:</label>
+        <input type="text" id="participated_won" name="participated_won" required><br><br>
+
+        <label for="position">Position:</label>
+        <input type="text" id="position" name="position"><br><br>
+
+        <label for="prize_amount">Prize Amount:</label>
+        <input type="number" id="prize_amount" name="prize_amount"><br><br>
+
+        <label for="event_photos">Event Photos (max 5):</label>
+        <input type="file" id="event_photos" name="event_photos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
+
+        <label for="certificate_photos">Certificate Photos (max 5):</label>
+        <input type="file" id="certificate_photos" name="certificate_photos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
