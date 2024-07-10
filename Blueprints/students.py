@@ -9,9 +9,18 @@ import re
 import secrets
 import string
 from db import mongo
-
+from bson import ObjectId
+import random
 
 StudentsBP = Blueprint('students', __name__)
+
+def AllowedFile(Filename):
+    return '.' in Filename and Filename.rsplit('.', 1)[1].lower() in StudentsBP.app.config['ALLOWED_EXTENSIONS']
+
+def GenerateRandomFilename(Extension):
+    Characters = string.ascii_letters + string.digits
+    RandomString = ''.join(random.choice(Characters) for _ in range(8))
+    return f"{RandomString}.{Extension}"
 
 def LoggedInUser(view_func):
     @wraps(view_func)
@@ -394,57 +403,165 @@ def EditProfile():
 @StudentsBP.route('/hackathons')
 @LoggedInUser
 def Hackathons():
-    return "1"
-
-# @StudentsBP.route('/hackathons/add')
-# @LoggedInUser
-# def HackathonsAdd():
-#     return "1"
-
-UPLOAD_FOLDER = 'static/uploads'
-EVENT_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'eventpics')
-CERTIFICATE_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'certificatepics')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    RollNumber = session['RollNumber'].upper()
+    results = list(mongo.db.HackathonParticipations.find({"TeamDetails": RollNumber}))
+    return render_template('students/Hackathons/Index.html', hackathons=results)
 
 @StudentsBP.route('/hackathons/add', methods=['GET', 'POST'])
 @LoggedInUser
 def HackathonsAdd():
+    RollNumber = session['RollNumber']
+
     if request.method == 'POST':
-        event_data = {
-            'event_name': request.form['event_name'],
-            'date': request.form['date'],
-            'venue': request.form['venue'],
-            'team_details': request.form['team_details'],
-            'status': request.form['status'],
-            'participated_won': request.form['participated_won'],
-            'position': request.form['position'],
-            'prize_amount': request.form['prize_amount'],
-            'event_photos': [],
-            'certificate_photos': []
+
+        Characters = string.ascii_letters + string.digits
+        ID = ''.join(random.choice(Characters) for _ in range(8))
+        
+        TeamDetails = request.form.getlist('TeamDetails[]')
+        FormattedTeamDetails = [item.upper() for item in TeamDetails]
+        
+        EventData = {
+            'ID': ID,
+            'EventName': request.form['EventName'],
+            'TeamName': request.form['TeamName'],
+            'ProjectTitle': request.form['ProjectTitle'],
+            'Date': request.form['Date'],
+            'Mode': request.form['Mode'],
+            'TeamDetails': FormattedTeamDetails,
+            'Status': request.form['Status'],
+            'EventPhotos': [],
+            'CertificatePhotos': []
         }
 
-        # Handle event photos
-        event_photos = request.files.getlist('event_photos')
-        for photo in event_photos[:5]:  # Limit to 5 photos
-            if photo and allowed_file(photo.filename):
-                filename = secure_filename(photo.filename)
-                photo.save(os.path.join(EVENT_PICS_FOLDER, filename))
-                event_data['event_photos'].append(filename)
+        if EventData['Mode'] == 'Offline':
+            EventData['Venue'] = request.form['Venue']
 
-        # Handle certificate photos
-        certificate_photos = request.files.getlist('certificate_photos')
-        for photo in certificate_photos[:5]:  # Limit to 5 photos
-            if photo and allowed_file(photo.filename):
-                filename = secure_filename(photo.filename)
-                photo.save(os.path.join(CERTIFICATE_PICS_FOLDER, filename))
-                event_data['certificate_photos'].append(filename)
+        if EventData['Status'] == 'EventCompleted':
+            EventData['ParticipatedWon'] = request.form['ParticipatedWon']
+
+            if EventData['ParticipatedWon'] == 'Won':
+                EventData['Position'] = request.form['Position']
+                EventData['PrizeAmount'] = request.form['PrizeAmount']
+
+            # Handle event photos
+            EventPhotos = request.files.getlist('EventPhotos')
+            for Photo in EventPhotos[:5]:  # Limit to 5 photos
+                if Photo and AllowedFile(Photo.filename):
+                    Extension = Photo.filename.rsplit('.', 1)[1].lower()
+                    Filename = GenerateRandomFilename(Extension)
+                    Photo.save(os.path.join(StudentsBP.app.config['EVENT_PICS_FOLDER'], Filename))
+                    EventData['EventPhotos'].append(url_for('static', filename=f'uploads/eventpics/{Filename}'))
+
+            # Handle certificate photos
+            CertificatePhotos = request.files.getlist('CertificatePhotos')
+            for Photo in CertificatePhotos[:5]:  # Limit to 5 photos
+                if Photo and AllowedFile(Photo.filename):
+                    Extension = Photo.filename.rsplit('.', 1)[1].lower()
+                    Filename = GenerateRandomFilename(Extension)
+                    Photo.save(os.path.join(StudentsBP.app.config['CERTIFICATE_PICS_FOLDER'], Filename))
+                    EventData['CertificatePhotos'].append(url_for('static', filename=f'uploads/certificatepics/{Filename}'))
 
         # Insert data into MongoDB
-        mongo.db.HackathonParticipations.insert_one(event_data)
+        mongo.db.HackathonParticipations.insert_one(EventData)
+        return redirect(url_for('students.Hackathons'))
 
-        return redirect(url_for('HackathonsAdd'))
+    return render_template('students/Hackathons/Add.html', RollNumber=RollNumber)
 
-    return render_template('students/HackathonsAdd.html')
+@StudentsBP.route('/hackathon/<string:id>')
+@LoggedInUser
+def ViewHackathon(id):
+    hackathon = mongo.db.HackathonParticipations.find_one({"_id": ObjectId(id)})
+    return render_template('students/Hackathons/View.html', hackathon=hackathon)
+
+@StudentsBP.route('/hackathons/edit/<string:id>', methods=['GET', 'POST'])
+@LoggedInUser
+def EditHackathon(id):
+    RollNumber = session['RollNumber']
+    hackathon = mongo.db.HackathonParticipations.find_one({"_id": ObjectId(id)})
+   
+    if request.method == 'POST':
+        TeamDetails = request.form.getlist('TeamDetails[]')
+        FormattedTeamDetails = [item.upper() for item in TeamDetails]
+       
+        EventData = {
+            'EventName': request.form['EventName'],
+            'TeamName': request.form['TeamName'],
+            'ProjectTitle': request.form['ProjectTitle'],
+            'Date': request.form['Date'],
+            'Mode': request.form['Mode'],
+            'TeamDetails': FormattedTeamDetails,
+            'Status': request.form['Status'],
+        }
+       
+        if EventData['Mode'] == 'Offline':
+            EventData['Venue'] = request.form['Venue']
+        else:
+            EventData['Venue'] = None
+       
+        if EventData['Status'] == 'EventCompleted':
+            EventData['ParticipatedWon'] = request.form['ParticipatedWon']
+            if EventData['ParticipatedWon'] == 'Won':
+                EventData['Position'] = request.form['Position']
+                EventData['PrizeAmount'] = request.form['PrizeAmount']
+            else:
+                EventData['Position'] = None
+                EventData['PrizeAmount'] = None
+           
+            # Handle event photos
+            EventPhotos = request.files.getlist('EventPhotos')
+            EventData['EventPhotos'] = hackathon.get('EventPhotos', [])
+            for Photo in EventPhotos:
+                if Photo and AllowedFile(Photo.filename):
+                    Extension = Photo.filename.rsplit('.', 1)[1].lower()
+                    Filename = GenerateRandomFilename(Extension)
+                    Photo.save(os.path.join(StudentsBP.app.config['EVENT_PICS_FOLDER'], Filename))
+                    EventData['EventPhotos'].append(url_for('static', filename=f'uploads/eventpics/{Filename}'))
+            EventData['EventPhotos'] = EventData['EventPhotos'][:5]  # Limit to 5 photos
+           
+            # Handle certificate photos
+            CertificatePhotos = request.files.getlist('CertificatePhotos')
+            EventData['CertificatePhotos'] = hackathon.get('CertificatePhotos', [])
+            for Photo in CertificatePhotos:
+                if Photo and AllowedFile(Photo.filename):
+                    Extension = Photo.filename.rsplit('.', 1)[1].lower()
+                    Filename = GenerateRandomFilename(Extension)
+                    Photo.save(os.path.join(StudentsBP.app.config['CERTIFICATE_PICS_FOLDER'], Filename))
+                    EventData['CertificatePhotos'].append(url_for('static', filename=f'uploads/certificatepics/{Filename}'))
+            EventData['CertificatePhotos'] = EventData['CertificatePhotos'][:5]  # Limit to 5 photos
+
+            # Remove photos if requested
+            remove_event_photos = request.form.getlist('remove_EventPhotos')
+            remove_certificate_photos = request.form.getlist('remove_CertificatePhotos')
+
+            EventData['EventPhotos'] = [photo for photo in EventData['EventPhotos'] if photo not in remove_event_photos]
+            EventData['CertificatePhotos'] = [photo for photo in EventData['CertificatePhotos'] if photo not in remove_certificate_photos]
+
+            # Remove files from server
+            for photo in remove_event_photos + remove_certificate_photos:
+                try:
+                    # Convert URL to file path
+                    file_path = os.path.join(StudentsBP.app.config['ROOT_PATH'], 'static', photo.split('/static/')[-1])
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                    else:
+                        StudentsBP.app.logger.warning(f"File not found: {file_path}")
+                except Exception as e:
+                    StudentsBP.app.logger.error(f"Error removing file {file_path}: {str(e)}")
+        else:
+            EventData['ParticipatedWon'] = None
+            EventData['Position'] = None
+            EventData['PrizeAmount'] = None
+            EventData['EventPhotos'] = []
+            EventData['CertificatePhotos'] = []
+       
+        # Update data in MongoDB
+        mongo.db.HackathonParticipations.update_one({"_id": ObjectId(id)}, {"$set": EventData})
+        return redirect(url_for('students.Hackathons'))
+   
+    return render_template('students/Hackathons/Edit.html', hackathon=hackathon, RollNumber=RollNumber)
+
+@StudentsBP.route('/hackathon/delete/<string:id>')
+@LoggedInUser
+def DeleteHackathon(id):
+    mongo.db.HackathonParticipations.delete_one({"_id": ObjectId(id)})
+    return redirect(url_for('students.Hackathons'))

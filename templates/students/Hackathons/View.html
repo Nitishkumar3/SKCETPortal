@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Hackathon</title>
+    <style>
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .photo {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hackathon Details</h1>
+    <dl>
+        <dt>Event Name</dt>
+        <dd>{{ hackathon.get('EventName', 'N/A') }}</dd>
+
+        <dt>Project Title</dt>
+        <dd>{{ hackathon.get('ProjectTitle', 'N/A') }}</dd>
+
+        <dt>Team Name</dt>
+        <dd>{{ hackathon.get('TeamName', 'N/A') }}</dd>
+
+        <dt>Date</dt>
+        <dd>{{ hackathon.get('Date', 'N/A') }}</dd>
+
+        <dt>Mode</dt>
+        <dd>{{ hackathon.get('Mode', 'N/A') }}</dd>
+
+        <dt>Venue</dt>
+        <dd>{{ hackathon.get('Venue', 'N/A') }}</dd>
+
+        <dt>Team Details</dt>
+        <dd>{{ ', '.join(hackathon.get('TeamDetails', [])) or 'N/A' }}</dd>
+
+        <dt>Status</dt>
+        <dd>{{ hackathon.get('Status', 'N/A') }}</dd>
+
+        <dt>Participated/Won</dt>
+        <dd>{{ hackathon.get('ParticipatedWon', 'N/A') }}</dd>
+
+        <dt>Position</dt>
+        <dd>{{ hackathon.get('Position', 'N/A') }}</dd>
+
+        <dt>Prize Amount</dt>
+        <dd>{{ hackathon.get('PrizeAmount', 'N/A') }}</dd>
+
+        <dt>Event Photos</dt>
+        <dd>
+            {% if hackathon.get('EventPhotos') %}
+                <div class="photo-container">
+                    {% for photo in hackathon['EventPhotos'] %}
+                        <img src="{{ photo }}" alt="Event Photo" class="photo">
+                    {% endfor %}
+                </div>
+            {% else %}
+                N/A
+            {% endif %}
+        </dd>
+
+        <dt>Certificate Photos</dt>
+        <dd>
+            {% if hackathon.get('CertificatePhotos') %}
+                <div class="photo-container">
+                    {% for photo in hackathon['CertificatePhotos'] %}
+                        <img src="{{ photo }}" alt="Certificate Photo" class="photo">
+                    {% endfor %}
+                </div>
+            {% else %}
+                N/A
+            {% endif %}
+        </dd>
+    </dl>
+    <a href="{{ url_for('students.Hackathons') }}">Back to List</a>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        .Hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Event Details Form</h1>
+    <form action="{{ url_for('students.HackathonsAdd') }}" method="POST" enctype="multipart/form-data">
+        <label for="EventName">Event Name:</label>
+        <input type="text" id="EventName" name="EventName" required><br><br>
+
+        <label for="ProjectTitle">Project Title:</label>
+        <input type="text" id="ProjectTitle" name="ProjectTitle" required><br><br>
+
+        <label for="TeamName">Team Name:</label>
+        <input type="text" id="TeamName" name="TeamName" required><br><br>
+
+        <label for="Date">Date:</label>
+        <input type="date" id="Date" name="Date" required><br><br>
+        
+        <label for="Mode">Mode:</label>
+        <select id="Mode" name="Mode" required>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+        </select><br><br>
+        
+        <div id="VenueContainer" class="Hidden">
+            <label for="Venue">Venue:</label>
+            <input type="text" id="Venue" name="Venue"><br><br>
+        </div>
+        
+        <label for="TeamDetails">Team Details:</label>
+        <div id="TeamDetailsContainer">
+            <input type="text" name="TeamDetails[]" value="{{ RollNumber }}" readonly required>
+            <button type="button" id="AddTeamDetail">Add More</button>
+        </div><br><br>
+        
+        <label for="Status">Status:</label>
+        <select id="Status" name="Status" required>
+            <option value="Registered">Registered</option>
+            <option value="EventCompleted">Event Completed</option>
+        </select><br><br>
+        
+        <div id="CompletedEventFields" class="Hidden">
+            <label for="ParticipatedWon">Participated/Won:</label>
+            <select id="ParticipatedWon" name="ParticipatedWon">
+                <option value="Participated">Participated</option>
+                <option value="Won">Won</option>
+            </select><br><br>
+            
+            <div id="WonFields" class="Hidden">
+                <label for="Position">Position:</label>
+                <input type="text" id="Position" name="Position"><br><br>
+                
+                <label for="PrizeAmount">Prize Amount:</label>
+                <input type="number" id="PrizeAmount" name="PrizeAmount"><br><br>
+            </div>
+            
+            <label for="EventPhotos">Event Photos (max 5):</label>
+            <input type="file" id="EventPhotos" name="EventPhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
+            
+            <label for="CertificatePhotos">Certificate Photos (max 5):</label>
+            <input type="file" id="CertificatePhotos" name="CertificatePhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
+        </div>
+        
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            $('#Mode').change(function() {
+                if ($(this).val() === 'Offline') {
+                    $('#VenueContainer').removeClass('Hidden');
+                    $('#Venue').prop('required', true);
+                } else {
+                    $('#VenueContainer').addClass('Hidden');
+                    $('#Venue').prop('required', false);
+                }
+            });
+
+            $('#AddTeamDetail').click(function() {
+                var newInput = $('<div><input type="text" name="TeamDetails[]" required><button type="button" class="RemoveTeamDetail">Remove</button></div>');
+                $('#TeamDetailsContainer').append(newInput);
+            });
+
+            $(document).on('click', '.RemoveTeamDetail', function() {
+                $(this).parent().remove();
+            });
+
+            $('#Status').change(function() {
+                if ($(this).val() === 'EventCompleted') {
+                    $('#CompletedEventFields').removeClass('Hidden');
+                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos').prop('required', true);
+                } else {
+                    $('#CompletedEventFields').addClass('Hidden');
+                    $('#WonFields').addClass('Hidden');
+                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos, #Position, #PrizeAmount').prop('required', false);
+                }
+            });
+
+            $('#ParticipatedWon').change(function() {
+                if ($(this).val() === 'Won') {
+                    $('#WonFields').removeClass('Hidden');
+                    $('#Position, #PrizeAmount').prop('required', true);
+                } else {
+                    $('#WonFields').addClass('Hidden');
+                    $('#Position, #PrizeAmount').prop('required', false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
