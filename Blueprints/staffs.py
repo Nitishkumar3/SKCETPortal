@@ -83,210 +83,283 @@ def Index():
 
     return render_template("staffs/Index.html", students=students)
 
-from flask import send_file
-from io import StringIO
-import pandas as pd
+from flask import send_file, request, jsonify
 from io import BytesIO
+import pandas as pd
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Image, PageBreak, Spacer
-from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Image, PageBreak
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.units import inch
 
-# Register Calibri font (make sure you have the Calibri.ttf file)
-pdfmetrics.registerFont(TTFont('Calibri', 'Calibri.ttf'))
-pdfmetrics.registerFont(TTFont('Calibri-Bold', 'Calibri-Bold.ttf'))
-
+# # Register Calibri font (make sure you have the Calibri.ttf file)
+# pdfmetrics.registerFont(TTFont('Calibri', 'Calibri.ttf'))
+# pdfmetrics.registerFont(TTFont('Calibri-Bold', 'Calibri-Bold.ttf'))
+try:
+    pdfmetrics.registerFont(TTFont('Calibri', 'Calibri.ttf'))
+    pdfmetrics.registerFont(TTFont('Calibri-Bold', 'Calibri-Bold.ttf'))
+    default_font = 'Calibri'
+    default_bold_font = 'Calibri-Bold'
+except Exception as e:
+    print(f"Error registering Calibri fonts: {str(e)}")
+    try:
+        pdfmetrics.registerFont(TTFont('TimesNewRoman', 'times-ro.ttf'))
+        pdfmetrics.registerFont(TTFont('TimesNewRoman-Bold', 'times-new-roman-grassetto.ttf'))
+        default_font = 'TimesNewRoman'
+        default_bold_font = 'TimesNewRoman-Bold'
+    except Exception as e:
+        print(f"Error registering Times New Roman fonts: {str(e)}")
+        default_font = 'Helvetica'
+        default_bold_font = 'Helvetica-Bold'
+    
 @StaffsBP.route('/ep', methods=['POST'])
 @LoggedInUser
 def receive_json():
-    data = request.json
-    roll_numbers = data.get('rollNumbers', [])
-    columns = data.get('columns', [])
+    try:
+        data = request.json
+        # print("Data received:", data)
+        
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+        
+        roll_numbers = data.get('rollNumbers', [])
+        columns = data.get('columns', [])
 
-    column_map = {
-    'Roll Number': 'RollNumber',
-    'First Name': 'first_name',
-    'Email': 'Email',
-    'Aadhaar Number': 'aadhaar_number',
-    'Account Number': 'account_number',
-    'Admission Mode': 'admission_mode',
-    'Annual Income': 'annual_income',
-    'Bank Account Name': 'bank_account_name',
-    'Bank Name': 'bank_name',
-    'Batch': 'batch',
-    'Branch': 'branch',
-    'City': 'city',
-    'Communication Address': 'communication_address',
-    'Communication City': 'communication_city',
-    'Communication Postal Code': 'communication_postal_code',
-    'Communication State': 'communication_state',
-    'Community': 'community',
-    'Country Name': 'country_name',
-    'Course Type': 'course_type',
-    'Date of Admission': 'date_of_admission',
-    'Degree': 'degree',
-    'Department': 'department',
-    'Differently Abled': 'differently_abled',
-    'Disability Percentage': 'disability_percentage',
-    'Disability Type': 'disability_type',
-    'Date of Birth': 'dob',
-    'EMIS Number': 'emis_number',
-    'Father Mobile': 'father_mobile',
-    'Father Name': 'father_name',
-    'Father Occupation': 'father_occupation',
-    'First Graduate': 'first_graduate',
-    'Gender': 'gender',
-    'Guardian Mobile': 'guardian_mobile',
-    'Guardian Name': 'guardian_name',
-    'Health Issues': 'health_issues',
-    'Health Issues Details': 'health_issues_details',
-    'Hostel Type': 'hostel_type',
-    'Hosteller': 'hosteller',
-    'IFSC Code': 'ifsc_code',
-    'Last Name': 'last_name',
-    'Lateral Entry': 'lateral_entry',
-    'Mobile Number': 'mobile_number',
-    'Mother Mobile': 'mother_mobile',
-    'Mother Name': 'mother_name',
-    'Mother Occupation': 'mother_occupation',
-    'Nationality': 'nationality',
-    'Orphan': 'orphan',
-    'PAN Number': 'pan_number',
-    'Permanent Address': 'permanent_address',
-    'Personal Email': 'personal_email',
-    'PG Address': 'pg_address',
-    'Postal Code': 'postal_code',
-    'Quota': 'quota',
-    'Religion': 'religion',
-    'Section': 'section',
-    'State': 'state',
-    'Status': 'status',
-    'Sub Caste': 'sub_caste',
-    'TNEA Application Number': 'tnea_application_number',
-    'UDID': 'udid',
-    'Voter ID': 'voter_id',
-    'Year': 'year'
-}
+        
+        if not roll_numbers or not columns:
+            return jsonify({"error": "Invalid data received: missing roll numbers or columns"}), 400
+        
+        columns = [col for col in columns if col]
+        if not columns:
+            return jsonify({"error": "No valid columns provided"}), 400
 
-    converted_columns = list(map(lambda col: column_map[col], columns))
-    columns = converted_columns
 
-    query = {"RollNumber": {"$in": roll_numbers}}
 
-    results = mongo.db.StudentDetails.find(query)
-    results = list(results)
+        column_map = {
+            'Roll Number': 'RollNumber',
+            'First Name': 'first_name',
+            'Email': 'Email',
+            'Aadhaar Number': 'aadhaar_number',
+            'Account Number': 'account_number',
+            'Admission Mode': 'admission_mode',
+            'Annual Income': 'annual_income',
+            'Bank Account Name': 'bank_account_name',
+            'Bank Name': 'bank_name',
+            'Batch': 'batch',
+            'Branch': 'branch',
+            'City': 'city',
+            'Communication Address': 'communication_address',
+            'Communication City': 'communication_city',
+            'Communication Postal Code': 'communication_postal_code',
+            'Communication State': 'communication_state',
+            'Community': 'community',
+            'Country Name': 'country_name',
+            'Course Type': 'course_type',
+            'Date of Admission': 'date_of_admission',
+            'Degree': 'degree',
+            'Department': 'department',
+            'Differently Abled': 'differently_abled',
+            'Disability Percentage': 'disability_percentage',
+            'Disability Type': 'disability_type',
+            'Date of Birth': 'dob',
+            'EMIS Number': 'emis_number',
+            'Father Mobile': 'father_mobile',
+            'Father Name': 'father_name',
+            'Father Occupation': 'father_occupation',
+            'First Graduate': 'first_graduate',
+            'Gender': 'gender',
+            'Guardian Mobile': 'guardian_mobile',
+            'Guardian Name': 'guardian_name',
+            'Health Issues': 'health_issues',
+            'Health Issues Details': 'health_issues_details',
+            'Hostel Type': 'hostel_type',
+            'Hosteller': 'hosteller',
+            'IFSC Code': 'ifsc_code',
+            'Last Name': 'last_name',
+            'Lateral Entry': 'lateral_entry',
+            'Mobile Number': 'mobile_number',
+            'Mother Mobile': 'mother_mobile',
+            'Mother Name': 'mother_name',
+            'Mother Occupation': 'mother_occupation',
+            'Nationality': 'nationality',
+            'Orphan': 'orphan',
+            'PAN Number': 'pan_number',
+            'Permanent Address': 'permanent_address',
+            'Personal Email': 'personal_email',
+            'PG Address': 'pg_address',
+            'Postal Code': 'postal_code',
+            'Quota': 'quota',
+            'Religion': 'religion',
+            'Section': 'section',
+            'State': 'state',
+            'Status': 'status',
+            'Sub Caste': 'sub_caste',
+            'TNEA Application Number': 'tnea_application_number',
+            'UDID': 'udid',
+            'Voter ID': 'voter_id',
+            'Year': 'year'
+        }
 
-    filtered_results = []
-    for student in results:
-        filtered_student = {key: student[key] for key in converted_columns if key in student}
-        filtered_results.append(filtered_student)
+        converted_columns = list(map(lambda col: column_map[col], columns))
+        # print("Converted columns:", converted_columns)
+        columns = converted_columns
 
-    reverse_column_map = {v: k for k, v in column_map.items()}
+        query = {"RollNumber": {"$in": roll_numbers}}
 
-    reversed_filtered_results = [
-        {reverse_column_map[key]: value for key, value in item.items() if key in reverse_column_map}
-        for item in filtered_results
-    ]
+        # results = mongo.db.StudentDetails.find(query)
+        # results = list(results)
+        try:
+            results = mongo.db.StudentDetails.find(query)
+            results = list(results)
+            # print(f"Found {len(results)} results")
+        except Exception as e:
+            print(f"Error querying MongoDB: {str(e)}")
+            return jsonify({"error": f"Database error: {str(e)}"}), 500
 
-    df = pd.DataFrame(reversed_filtered_results)
-    df.insert(0, 'S.No', range(1, len(df) + 1))
+        if not results:
+            return jsonify({"error": "No data found for the given roll numbers"}), 404
 
-    buffer = BytesIO()
-    
-    # Increase top margin to accommodate the header logo
-    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), rightMargin=20, leftMargin=20, topMargin=80, bottomMargin=20)
-    
-    elements = []
-    
-    # Function to estimate column widths
-    def estimate_col_width(col_data):
-        max_width = max(len(str(item)) for item in col_data)
-        return max(max_width * 6, 60)  # Adjust multiplier as needed
-    
-    # Estimate column widths
-    estimated_widths = [estimate_col_width(df[col]) for col in df.columns]
-    
-    # Prepare data for table
-    data = [df.columns.tolist()] + df.values.tolist()
-    
-    # Calculate how many columns can fit on one page
-    available_width = doc.width - 40  # Subtracting margins
-    columns_per_page = []
-    current_page_width = 0
-    current_page_columns = 0
-    
-    for width in estimated_widths:
-        if current_page_width + width > available_width:
+        filtered_results = []
+        for student in results:
+            filtered_student = {key: student[key] for key in converted_columns if key in student}
+            filtered_results.append(filtered_student)
+
+        # print("Filtered results:", filtered_results)
+
+        reverse_column_map = {v: k for k, v in column_map.items()}
+
+        reversed_filtered_results = [
+            {reverse_column_map[key]: value for key, value in item.items() if key in reverse_column_map}
+            for item in filtered_results
+        ]
+
+        df = pd.DataFrame(reversed_filtered_results)
+        df.insert(0, 'S.No', range(1, len(df) + 1))
+
+        buffer = BytesIO()
+
+        # Increase top margin to accommodate the header logo
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), rightMargin=20, leftMargin=20, topMargin=80, bottomMargin=20)
+
+        elements = []
+
+        # Function to estimate column widths
+        def estimate_col_width(col_data):
+            max_width = max(len(str(item)) for item in col_data)
+            return max(max_width * 6, 60)  # Adjust multiplier as needed
+
+        # Estimate column widths
+        estimated_widths = [estimate_col_width(df[col]) for col in df.columns]
+
+        # Prepare data for table
+        data = [df.columns.tolist()] + df.values.tolist()
+
+        # Calculate how many columns can fit on one page
+        available_width = doc.width - 40  # Subtracting margins
+        columns_per_page = []
+        current_page_width = 0
+        current_page_columns = 0
+
+        for width in estimated_widths:
+            if current_page_width + width > available_width:
+                columns_per_page.append(current_page_columns)
+                current_page_width = width
+                current_page_columns = 1
+            else:
+                current_page_width += width
+                current_page_columns += 1
+
+        if current_page_columns > 0:
             columns_per_page.append(current_page_columns)
-            current_page_width = width
-            current_page_columns = 1
-        else:
-            current_page_width += width
-            current_page_columns += 1
-    
-    if current_page_columns > 0:
-        columns_per_page.append(current_page_columns)
-    
-    # Create tables for each page
-    start_col = 0
-    for page_columns in columns_per_page:
-        end_col = start_col + page_columns
-        sub_data = [row[start_col:end_col] for row in data]
-        sub_widths = estimated_widths[start_col:end_col]
-        
-        # Scale widths to fit page
-        scale_factor = available_width / sum(sub_widths)
-        sub_widths = [width * scale_factor for width in sub_widths]
-        
-        table = Table(sub_data, colWidths=sub_widths)
-        
-        style = TableStyle([
-            ('FONT', (0, 0), (-1, -1), 'Calibri'),
-            ('FONT', (0, 0), (-1, 0), 'Calibri-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
-            ('WORDWRAP', (0, 0), (-1, -1), True),
-        ])
-        table.setStyle(style)
-        
-        elements.append(table)
-        
-        if end_col < len(df.columns):
-            elements.append(PageBreak())
-        
-        start_col = end_col
-    
-    # Build the PDF with custom page layout
-    def add_header_and_page_number(canvas, doc):
-        canvas.saveState()
-        
-        # Add header image
-        header_image_path = 'logo.jpg'  # Replace with actual path
-        img = Image(header_image_path)
-        img_width = doc.width * 0.5
-        img.drawWidth = img_width
-        img.drawHeight = img.drawWidth * img.imageHeight / img.imageWidth
-        img.drawOn(canvas, (doc.width - img_width) / 2 + doc.leftMargin, doc.height + doc.topMargin - img.drawHeight)
-        
-        # Add page number
-        page_num = canvas.getPageNumber()
-        text = f"Page {page_num}"
-        canvas.setFont("Calibri", 9)
-        canvas.drawRightString(doc.width + doc.rightMargin, 0.5 * inch, text)
-        
-        canvas.restoreState()
 
-    doc.build(elements, onFirstPage=add_header_and_page_number, onLaterPages=add_header_and_page_number)
-    buffer.seek(0)
-    
-    return send_file(buffer, as_attachment=True, download_name="exported_data.pdf", mimetype="application/pdf")
+        # Create tables for each page
+        start_col = 0
+        for page_columns in columns_per_page:
+            end_col = start_col + page_columns
+            sub_data = [row[start_col:end_col] for row in data]
+            sub_widths = estimated_widths[start_col:end_col]
 
+            # Scale widths to fit page
+            scale_factor = available_width / sum(sub_widths)
+            sub_widths = [width * scale_factor for width in sub_widths]
+
+            table = Table(sub_data, colWidths=sub_widths)
+
+            style = TableStyle([
+                ('FONT', (0, 0), (-1, -1), 'Calibri'),
+                ('FONT', (0, 0), (-1, 0), 'Calibri-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 8),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+                ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                ('WORDWRAP', (0, 0), (-1, -1), True),
+            ])
+            table.setStyle(style)
+
+            elements.append(table)
+
+            if end_col < len(df.columns):
+                elements.append(PageBreak())
+
+            start_col = end_col
+
+        # Build the PDF with custom page layout
+        def add_header_and_page_number(canvas, doc):
+            canvas.saveState()
+
+            # Add header image
+            # header_image_path = 'logo.jpg'  # Replace with actual path
+            # img = Image(header_image_path)
+            # img_width = doc.width * 0.5
+            # img.drawWidth = img_width
+            # img.drawHeight = img.drawWidth * img.imageHeight / img.imageWidth
+            # img.drawOn(canvas, (doc.width - img_width) / 2 + doc.leftMargin, doc.height + doc.topMargin - img.drawHeight)
+            
+            header_image_path = 'logo.jpg'
+            try:
+                img = Image(header_image_path)
+                img_width = doc.width * 0.5
+                img.drawWidth = img_width
+                img.drawHeight = img.drawWidth * img.imageHeight / img.imageWidth
+                img.drawOn(canvas, (doc.width - img_width) / 2 + doc.leftMargin, doc.height + doc.topMargin - img.drawHeight)
+            except Exception as e:
+                print(f"Error loading header image: {str(e)}")
+                # Optionally, continue without the image
+                # You can add a text header instead, or just skip the header entirely
+                canvas.setFont(default_font, 16)
+                canvas.drawString(doc.leftMargin, doc.height + doc.topMargin - 30, "Student Details Report")
+
+
+            # Add page number
+            page_num = canvas.getPageNumber()
+            text = f"Page {page_num}"
+            canvas.setFont(default_font, 16)
+            canvas.drawRightString(doc.width + doc.rightMargin, 0.5 * inch, text)
+
+            canvas.restoreState()
+
+        # doc.build(elements, onFirstPage=add_header_and_page_number, onLaterPages=add_header_and_page_number)
+        try:
+            doc.build(elements, onFirstPage=add_header_and_page_number, onLaterPages=add_header_and_page_number)
+        except Exception as e:
+            print(f"Error building PDF: {str(e)}")
+            return jsonify({"error": f"PDF generation failed: {str(e)}"}), 500
+        buffer.seek(0)
+
+        return send_file(buffer, as_attachment=True, download_name="exported_data.pdf", mimetype="application/pdf")
+    
+    except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error in receive_json: {str(e)}\n{error_details}")
+        return jsonify({"error": str(e), "details": error_details}), 500
+
+            
+            
+       
 @StaffsBP.route('/verifyaccount/<RollNumber>', methods=['GET', 'POST'])
 @NotLoggedInUser
 def VerifyAccount(RollNumber):
