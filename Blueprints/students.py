@@ -405,6 +405,13 @@ def EditProfile():
 def Hackathons():
     RollNumber = session['RollNumber'].upper()
     results = list(mongo.db.HackathonParticipations.find({"TeamDetails": RollNumber}))
+    for index, item in enumerate(results, start=1):
+        item['sno'] = index
+
+    # Convert ObjectId to string
+    for result in results:
+        if '_id' in result:
+            result['_id'] = str(result['_id'])
     return render_template('students/Hackathons/Index.html', hackathons=results)
 
 @StudentsBP.route('/hackathons/add', methods=['GET', 'POST'])

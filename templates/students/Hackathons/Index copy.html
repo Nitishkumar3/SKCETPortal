@@ -1,0 +1,45 @@
+<!-- hackathons.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackathons</title>
+</head>
+<body>
+    <h1>My Hackathons</h1>
+    <a href="{{ url_for('students.HackathonsAdd') }}">Add</a>
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Event Name</th>
+                <th>Team Name</th>
+                <th>Project Title</th>
+                <th>Date</th>
+                <th>Mode</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hackathon in hackathons %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ hackathon.EventName }}</td>
+                <td>{{ hackathon.TeamName }}</td>
+                <td>{{ hackathon.ProjectTitle }}</td>
+                <td>{{ hackathon.Date }}</td>
+                <td>{{ hackathon.Mode }}</td>
+                <td>{{ hackathon.Status }}</td>
+                <td>
+                    <a href="{{ url_for('students.ViewHackathon', id=hackathon._id) }}">View</a>
+                    <a href="{{ url_for('students.EditHackathon', id=hackathon._id) }}">Edit</a>
+                    <a href="{{ url_for('students.DeleteHackathon', id=hackathon._id) }}" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
