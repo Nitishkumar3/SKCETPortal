@@ -204,7 +204,7 @@
                               <label for="register-number"
                                   class="block text-sm font-medium leading-6 text-gray-900">RollNumber</label>
                               <div class="mt-2">
-                                  <input id="register-number" name="register-number" type="text" value="{{data.RollNumber}}" class="register-number block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                  <input id="register-number" name="register-number" type="text" readonly value="{{data.RollNumber}}" class="register-number block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                               </div>
                               <p class="mt-2 text-sm text-red-600" id="register-number-error"></p>
                           </div>
@@ -244,7 +244,7 @@
                           <div class="sm:col-span-3">
                               <label for="college-email" class="block text-sm font-medium leading-6 text-gray-900">College Email ID</label>
                               <div class="mt-2">
-                                  <input id="college-email" name="college-email" type="text" value="{{ data.Email }}" class="college-email block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                  <input id="college-email" name="college-email" type="text" readonly value="{{ data.Email }}" class="college-email block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                               </div>
                               <p class="mt-2 text-sm text-red-600" id="college-email-error"></p>
                           </div>
@@ -670,21 +670,7 @@
                               </div>
                           </div>
   
-                          <div class="sm:col-span-2">
-                              <label class="block text-sm font-medium leading-6 text-gray-900">Year</label>
-                              <div class="mt-2">
-                                  <select id="year" name="year" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                                      <option value="">-Select-</option>
-                                      <option value="1" {% if data.year == '1' %} selected {% endif %}>1</option>
-                                      <option value="2" {% if data.year == '2' %} selected {% endif %}>2</option>
-                                      <option value="3" {% if data.year == '3' %} selected {% endif %}>3</option>
-                                      <option value="4" {% if data.year == '4' %} selected {% endif %}>4</option>
-                                      <option value="5" {% if data.year == '5' %} selected {% endif %}>5</option>
-                                  </select>
-                                  <p id="year-error" class="mt-2 text-sm text-red-600"></p>
-                              </div>
-                          </div>
-                          <div class="sm:col-span-2">
+                          <div class="sm:col-span-3">
                               <label class="block text-sm font-medium leading-6 text-gray-900">Section</label>
                               <div class="mt-2">
                                   <select id="section" name="section" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
@@ -696,7 +682,7 @@
                                   <p id="section-error" class="mt-2 text-sm text-red-600"></p>
                               </div>
                           </div>
-                          <div class="sm:col-span-2">
+                          <div class="sm:col-span-3">
                               <label for="batch" class="block text-sm font-medium leading-6 text-gray-900">Batch</label>
                               <div class="mt-2">
                                   <input id="batch" name="batch" type="text" value="{{data.batch}}" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
