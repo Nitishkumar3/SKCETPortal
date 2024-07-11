@@ -15,17 +15,20 @@ app.secret_key = "GS1jv6dDu1hmVzdWySky7Me324VGPE6H4nMeXF3SsXZyEtRnTuh9y83tzQcQeC
 app.config['MONGO_URI'] = MONGO_URI
 mongo.init_app(app)
 
-# File upload configuration
-UPLOAD_FOLDER = 'static/uploads'
-EVENT_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'eventpics')
-CERTIFICATE_PICS_FOLDER = os.path.join(UPLOAD_FOLDER, 'certificatepics')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
+UploadFolder = 'static/uploads'
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(EVENT_PICS_FOLDER, exist_ok=True)
-os.makedirs(CERTIFICATE_PICS_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UploadFolder
+app.config['EVENT_PICS_FOLDER'] = os.path.join(UploadFolder, 'eventpics')
+app.config['CERTIFICATE_PICS_FOLDER'] = os.path.join(UploadFolder, 'certificatepics')
+app.config['ROOT_PATH'] = app.root_path
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'pdf'}
 
-app.register_blueprint(StudentsBP, url_prefix='/', mongo=mongo)
+os.makedirs(os.path.join(UploadFolder, 'eventpics'), exist_ok=True)
+os.makedirs(os.path.join(UploadFolder, 'certificatepics'), exist_ok=True)
+
+StudentsBP.app = app
+
+app.register_blueprint(StudentsBP, url_prefix='/')
 app.register_blueprint(StaffsBP, url_prefix='/staff', mongo=mongo)
 app.register_blueprint(AdminBP, url_prefix='/admin', mongo=mongo)
 

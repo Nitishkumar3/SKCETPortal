@@ -29,3 +29,5 @@ env.bak/
 
 # Local development configuration
 .env
+
+static/uploads/
