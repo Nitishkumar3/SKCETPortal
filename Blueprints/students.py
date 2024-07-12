@@ -339,7 +339,6 @@ def EditProfile():
         admission_details = {
             'degree': request.form['degree'],
             'department': request.form['department'],
-            'year': request.form['year'],
             'section': request.form['section'],
             'batch': request.form['batch'],
             'admission_mode': request.form['admission-mode'],

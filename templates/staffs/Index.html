@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sortable and Filterable Table</title>
+    <title>Student Details - SKCET</title>
     <link href="../../assets/output4.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <link rel="stylesheet" type="text/css"
@@ -357,6 +357,9 @@
                                             IFSC Code</th>
                                         <th scope="col"
                                             class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                            Branch</th>    
+                                        <th scope="col"
+                                            class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
                                             Father Name</th>
                                         <th scope="col"
                                             class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
@@ -397,9 +400,6 @@
                                         <th scope="col"
                                             class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
                                             Batch</th>
-                                        <th scope="col"
-                                            class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
-                                            Branch</th>
                                         <th scope="col"
                                             class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
                                             Section</th>
@@ -534,6 +534,7 @@
                                         <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['ifsc_code']
                                             }}
                                         </td>
+                                        <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['branch'] }}
                                         <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
                                             student['father_name'] }}
                                         </td>
@@ -578,7 +579,6 @@
                                         </td>
                                         <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['batch'] }}
                                         </td>
-                                        <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['branch'] }}
                                         </td>
                                         <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['section'] }}
                                         </td>
@@ -842,9 +842,6 @@
                             console.error('Response:', xhr.responseText);
                             alert('Error exporting data: ' + error + '\nStatus: ' + status + '\nResponse: ' + xhr.responseText);
                         }
-                        // error: function (xhr, status, error) {
-                        //     alert('Error exporting data: ' + error + '\nStatus: ' + status + '\nResponse: ' + xhr.responseText);
-                        // }
                     });
                 });
 
@@ -884,86 +881,85 @@
                     });
                 });
 
-
                 const categoryData = {
-                    personal: [
-                        { id: 'rollNumber', label: 'Roll Number', column: 2 },
-                        { id: 'firstName', label: 'First Name', column: 3 },
-                        { id: 'lastName', label: 'Last Name', column: 4 },
-                        { id: 'dateOfBirth', label: 'Date of Birth', column: 5 },
-                        { id: 'gender', label: 'Gender', column: 6 },
-                        { id: 'mobileNumber', label: 'Mobile Number', column: 7 },
-                        { id: 'email', label: 'College Email', column: 8 },
-                        { id: 'personalEmail', label: 'Personal Email', column: 9 },
-                        { id: 'nationality', label: 'Nationality', column: 10 },
-                        { id: 'religion', label: 'Religion', column: 11 },
-                        { id: 'community', label: 'Community', column: 12 },
-                        { id: 'subCaste', label: 'Sub Caste', column: 13 },
-                        { id: 'firstGraduate', label: 'First Graduate', column: 14 },
-                    ],
-                    address: [
-                        { id: 'permanentAddress', label: 'Permanent Address', column: 15 },
-                        { id: 'city', label: 'City', column: 16 },
-                        { id: 'state', label: 'State', column: 17 },
-                        { id: 'postalCode', label: 'Postal Code', column: 18 },
-                        { id: 'communicationAddress', label: 'Communication Address', column: 19 },
-                        { id: 'communicationCity', label: 'Communication City', column: 20 },
-                        { id: 'communicationState', label: 'Communication State', column: 21 },
-                        { id: 'communicationPostalCode', label: 'Communication Postal Code', column: 22 },
-                    ],
-                    government: [
-                        { id: 'aadhaar', label: 'Aadhaar Number', column: 23 },
-                        { id: 'panNumber', label: 'PAN Number', column: 24 },
-                        { id: 'voterId', label: 'Voter ID', column: 25 },
-                    ],
-                    bank: [
-                        { id: 'accountNumber', label: 'Account Number', column: 26 },
-                        { id: 'bankName', label: 'Bank Name', column: 27 },
-                        { id: 'bankAccountName', label: 'Bank Account Name', column: 28 },
-                        { id: 'ifscCode', label: 'IFSC Code', column: 29 },
-                    ],
-                    parent: [
-                        { id: 'fatherName', label: 'Father Name', column: 30 },
-                        { id: 'fatherMobile', label: 'Father Mobile', column: 31 },
-                        { id: 'fatherOccupation', label: 'Father Occupation', column: 32 },
-                        { id: 'motherName', label: 'Mother Name', column: 33 },
-                        { id: 'motherMobile', label: 'Mother Mobile', column: 34 },
-                        { id: 'motherOccupation', label: 'Mother Occupation', column: 35 },
-                        { id: 'guardianName', label: 'Guardian Name', column: 36 },
-                        { id: 'guardianMobile', label: 'Guardian Mobile', column: 37 },
-                    ],
-                    admission: [
-                        { id: 'dateOfAdmission', label: 'Date of Admission', column: 38 },
-                        { id: 'admissionMode', label: 'Admission Mode', column: 39 },
-                        { id: 'courseType', label: 'Course Type', column: 40 },
-                        { id: 'degree', label: 'Degree', column: 41 },
-                        { id: 'department', label: 'Department', column: 42 },
-                        { id: 'batch', label: 'Batch', column: 43 },
-                        { id: 'branch', label: 'Branch', column: 44 },
-                        { id: 'section', label: 'Section', column: 45 },
-                        { id: 'lateralEntry', label: 'Lateral Entry', column: 46 },
-                        { id: 'quota', label: 'Quota', column: 47 },
-                        { id: 'tneaApplicationNumber', label: 'TNEA Application Number', column: 48 },
-                    ],
-                    hostel: [
-                        { id: 'hosteller', label: 'Hosteller', column: 49 },
-                        { id: 'hostelType', label: 'Hostel Type', column: 50 },
-                        { id: 'pgAddress', label: 'PG Address', column: 51 },
-                    ],
-                    health: [
-                        { id: 'healthIssues', label: 'Health Issues', column: 52 },
-                        { id: 'healthIssuesDetails', label: 'Health Issues Details', column: 53 },
-                    ],
-                    'differently-abled': [
-                        { id: 'differentlyAbled', label: 'Differently Abled', column: 54 },
-                        { id: 'disabilityPercentage', label: 'Disability Percentage', column: 55 },
-                        { id: 'disabilityType', label: 'Disability Type', column: 56 },
-                        { id: 'udid', label: 'UDID', column: 57 },
-                    ],
-                    status: [
-                        { id: 'status', label: 'Status', column: 58 },
-                    ],
-                };
+    personal: [
+        { id: 'rollNumber', label: 'Roll Number', column: 2 },
+        { id: 'firstName', label: 'First Name', column: 3 },
+        { id: 'lastName', label: 'Last Name', column: 4 },
+        { id: 'dateOfBirth', label: 'Date of Birth', column: 5 },
+        { id: 'gender', label: 'Gender', column: 6 },
+        { id: 'mobileNumber', label: 'Mobile Number', column: 7 },
+        { id: 'email', label: 'College Email', column: 8 },
+        { id: 'personalEmail', label: 'Personal Email', column: 9 },
+        { id: 'nationality', label: 'Nationality', column: 10 },
+        { id: 'religion', label: 'Religion', column: 11 },
+        { id: 'community', label: 'Community', column: 12 },
+        { id: 'subCaste', label: 'Sub Caste', column: 13 },
+        { id: 'firstGraduate', label: 'First Graduate', column: 14 },
+    ],
+    address: [
+        { id: 'permanentAddress', label: 'Permanent Address', column: 15 },
+        { id: 'city', label: 'City', column: 16 },
+        { id: 'state', label: 'State', column: 17 },
+        { id: 'postalCode', label: 'Postal Code', column: 18 },
+        { id: 'communicationAddress', label: 'Communication Address', column: 19 },
+        { id: 'communicationCity', label: 'Communication City', column: 20 },
+        { id: 'communicationState', label: 'Communication State', column: 21 },
+        { id: 'communicationPostalCode', label: 'Communication Postal Code', column: 22 },
+    ],
+    government: [
+        { id: 'aadhaar', label: 'Aadhaar Number', column: 23 },
+        { id: 'panNumber', label: 'PAN Number', column: 24 },
+        { id: 'voterId', label: 'Voter ID', column: 25 },
+    ],
+    bank: [
+        { id: 'accountNumber', label: 'Account Number', column: 26 },
+        { id: 'bankName', label: 'Bank Name', column: 27 },
+        { id: 'bankAccountName', label: 'Bank Account Name', column: 28 },
+        { id: 'ifscCode', label: 'IFSC Code', column: 29 },
+        { id: 'branch', label: 'Branch', column: 30 },
+    ],
+    parent: [
+        { id: 'fatherName', label: 'Father Name', column: 31 },
+        { id: 'fatherMobile', label: 'Father Mobile', column: 32 },
+        { id: 'fatherOccupation', label: 'Father Occupation', column: 33 },
+        { id: 'motherName', label: 'Mother Name', column: 34 },
+        { id: 'motherMobile', label: 'Mother Mobile', column: 35 },
+        { id: 'motherOccupation', label: 'Mother Occupation', column: 36 },
+        { id: 'guardianName', label: 'Guardian Name', column: 37 },
+        { id: 'guardianMobile', label: 'Guardian Mobile', column: 38 },
+    ],
+    admission: [
+        { id: 'dateOfAdmission', label: 'Date of Admission', column: 39 },
+        { id: 'admissionMode', label: 'Admission Mode', column: 40 },
+        { id: 'courseType', label: 'Course Type', column: 41 },
+        { id: 'degree', label: 'Degree', column: 42 },
+        { id: 'department', label: 'Department', column: 43 },
+        { id: 'batch', label: 'Batch', column: 44 },
+        { id: 'section', label: 'Section', column: 45 },
+        { id: 'lateralEntry', label: 'Lateral Entry', column: 46 },
+        { id: 'quota', label: 'Quota', column: 47 },
+        { id: 'tneaApplicationNumber', label: 'TNEA Application Number', column: 48 },
+    ],
+    hostel: [
+        { id: 'hosteller', label: 'Hosteller', column: 49 },
+        { id: 'hostelType', label: 'Hostel Type', column: 50 },
+        { id: 'pgAddress', label: 'PG Address', column: 51 },
+    ],
+    health: [
+        { id: 'healthIssues', label: 'Health Issues', column: 52 },
+        { id: 'healthIssuesDetails', label: 'Health Issues Details', column: 53 },
+    ],
+    'differently-abled': [
+        { id: 'differentlyAbled', label: 'Differently Abled', column: 54 },
+        { id: 'disabilityPercentage', label: 'Disability Percentage', column: 55 },
+        { id: 'disabilityType', label: 'Disability Type', column: 56 },
+        { id: 'udid', label: 'UDID', column: 57 },
+    ],
+    status: [
+        { id: 'status', label: 'Status', column: 58 },
+    ],
+};
             });
 
 

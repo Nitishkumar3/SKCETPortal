@@ -40,7 +40,7 @@
                                 <option value="">-Select-</option>
                                 <option value="B.E.">M.E.</option>
                                 <option value="B.Tech">B.Tech</option>
-                                <option value="M.Tech integrated" >M.Tech integrated</option>
+                                <option value="M.Tech Integrated" >M.Tech Integrated</option>
                                 <option value="MBA">MBA</option>
                             </select>
                             <p id="degree-error" class="mt-2 text-sm text-red-600"></p>
@@ -129,7 +129,7 @@
             nameInput.classList.remove("ring-red-300");
 
             // Validate name
-            var namePattern = /^[a-zA-Z]+$/;
+            var namePattern = /^[a-zA-Z\s]+$/;
             if (name.trim() === "") {
                 nameError.innerHTML = "Enter Staff name";
                 nameInput.classList.add("ring-red-300");
