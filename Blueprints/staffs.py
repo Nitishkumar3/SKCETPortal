@@ -139,7 +139,7 @@ def receive_json():
         column_map = {
             'Roll Number': 'RollNumber',
             'First Name': 'first_name',
-            'Email': 'Email',
+            'College Email': 'Email',
             'Aadhaar Number': 'aadhaar_number',
             'Account Number': 'account_number',
             'Admission Mode': 'admission_mode',
