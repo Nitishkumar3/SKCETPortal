@@ -171,7 +171,7 @@ def Login():
             session['SessionKey'] = sessionkey
             session['RollNumber'] = user["RollNumber"]
 
-            return redirect(url_for('Index'))
+            return redirect(url_for('students.Dashboard'))
         else:
             flash('Invalid Login or password', 'error')
     return render_template('students/Login.html')
@@ -256,7 +256,7 @@ def Profile():
         name = user["first_name"]
         if user.get("last_name"):
             name += " " + user["last_name"]
-        return render_template('students/Profile.html', data = user, name = name)
+        return render_template('students/Profile/Index.html', data = user, name = name)
     else:
         flash('User not found.', 'error')
         return redirect(url_for('students.Login'))
@@ -397,7 +397,18 @@ def EditProfile():
         name = user["first_name"]
         if user.get("last_name"):
             name += " " + user["last_name"]
-        return render_template('students/EditProfile.html', data = user, name = name)
+        return render_template('students/Profile/Edit.html', data = user, name = name)
+
+@StudentsBP.route('/dashboard')
+@LoggedInUser
+def Dashboard():
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
+
+    return render_template('students/Dashboard.html', name = name)
 
 @StudentsBP.route('/hackathons')
 @LoggedInUser

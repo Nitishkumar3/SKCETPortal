@@ -1,217 +1,171 @@
 <!doctype html>
-<html class="h-full bg-white dark:bg-gray-900 dark:text-white">
+<html class="h-full bg-white">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="../../assets/output2.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-    body {
-        font-family: "Inter", sans-serif;
-    }
-  </style>
 </head>
-<body class="h-full">
-  <div>
-  <!-- Mobile Menu -->
-  <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
-    <div class="fixed inset-0 bg-gray-900/80"></div>
-    <div class="fixed inset-0 flex">
-      <div class="relative mr-16 flex w-full max-w-xs flex-1">
-        <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
-          <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
-            <span class="sr-only">Close sidebar</span>
-            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+<body>
+  <!-- Nav Bar: Start -->
+  <header class="absolute inset-x-0 top-0 z-50">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between gap-x-6 p-6 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1">
+        <a href="#" class="-m-1.5 p-1.5">
+          <span class="sr-only">Your Company</span>
+          <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="">
+        </a>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Product</a>
+        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Features</a>
+        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Marketplace</a>
+        <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Company</a>
+      </div>
+      <div class="flex flex-1 items-center justify-end gap-x-6">
+        <span onclick="toggleDarkMode()" id="toggleDarkMode"></span>
+        <!-- <a href="/login" class="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900 ">Log in</a>
+        <a href="#" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign up</a> -->
+        {% if IsLoggedIn %}
+            <a href="{{ url_for('students.Dashboard') }}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Dashboard</a>
+            <a href="{{ url_for('students.Logout') }}" class="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900">Logout</a>
+        {% else %}
+            <a href="{{ url_for('students.Login') }}" class="hidden lg:block lg:text-sm lg:font-semibold lg:leading-6 lg:text-gray-900 ">Log in</a>
+            <a href="{{ url_for('students.Registration') }}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign up</a>
+        {% endif %}
+      </div>
+      
+      <!-- Mobile menu, show/hide based on menu open state. -->
+      <div class="flex lg:hidden">
+        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700 " id="OpenButton">
+          <span class="sr-only">Open main menu</span>
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+    <div class="lg:hidden mmenu" role="dialog" aria-modal="true" style="display: none;">
+      <div class="fixed inset-0 z-10"></div>
+      <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center gap-x-6">
+          <a href="#" class="-m-1.5 p-1.5">
+            <span class="sr-only">Your Company</span>
+            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="">
+          </a>
+
+          {% if IsLoggedIn %}
+            <a href="{{ url_for('students.Logout') }}" class="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Logout</a>
+          {% else %}
+            <a href="{{ url_for('students.Registration') }}" class="ml-auto rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign up</a>
+          {% endif %}
+
+          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700" id="CloseButton">
+            <span class="sr-only">Close menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-
-        <!-- Sidebar component, swap this element with another sidebar if you like -->
-        <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 dark:bg-gray-900 ring-1 ring-white/10">
-          <div class="flex h-16 shrink-0 items-center">
-            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company">
-          </div>
-          <nav class="flex flex-1 flex-col">
-            <ul role="list" class="flex flex-1 flex-col gap-y-7">
-              <li>
-                <ul role="list" class="-mx-2 space-y-1">
-                  <li>
-                    <a href="#" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-house fa-lg"></i> Dashboard
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-sitemap fa-lg"></i> Accounts
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-display fa-lg"></i> Sessions
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-address-card fa-lg"></i> Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-folder fa-lg"></i> Documents
-                    </a>
-                  </li>                  
-                  <li>
-                    <a href="#" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
-                      <i class="fa-regular fa-badge-check fa-lg"></i> Verification
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="mt-auto">
-                <a href="#" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-white hover:bg-indigo-700 dark:hover:bg-gray-800 hover:text-white items-center">
-                  <i class="fa-regular fa-gear fa-lg text-white"></i> Settings
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Static Sidebar for Desktop -->
-  <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 dark:bg-gray-900 ring-1 ring-white/10">
-      <div class="flex h-16 shrink-0 items-center">
-        <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company">
-      </div>
-      <nav class="flex flex-1 flex-col">
-        <ul role="list" class="flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role="list" class="-mx-2 space-y-1">
-              <li>
-                <a href="#" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 items-center rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-house fa-lg"></i> Dashboard
-                </a>
-              </li>
-              <li>
-                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-sitemap fa-lg"></i> Accounts
-                </a>
-              </li>
-              <li>
-                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 items-center group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-display fa-lg"></i> Sessions
-                </a>
-              </li>
-              <li>
-                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-address-card fa-lg"></i> Profile
-                </a>
-              </li>
-              <li>
-                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-folder fa-lg"></i> Documents
-                </a>
-              </li>
-              <li>
-                <a href="#" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
-                  <i class="fa-regular fa-badge-check fa-lg"></i> Verification
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li class="mt-auto">
-            <a href="#" class="group -mx-2 flex gap-x-3 items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 dark:hover:bg-gray-800 text-white">
-              <i class="fa-regular fa-gear fa-lg text-white"></i> Settings
-            </a>
-          </li> 
-        </ul>
-      </nav>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <div class="lg:pl-72">
-    <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-900 dark:border-white/10">
-      <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
-        <span class="sr-only">Open sidebar</span>
-        <i class="fa-regular fa-bars fa-lg dark:text-white"></i>
-      </button>
-
-      <!-- Separator -->
-      <!-- <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div> -->
-
-      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <div class="relative flex flex-1"></div>
-        <div class="flex items-center gap-x-4 lg:gap-x-6">
-          
-
-
-
-          <!-- Separator -->
-          <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
-
-          <!-- Profile dropdown -->
-          <div class="relative">
-            <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-              <span class="sr-only">Open user menu</span>
-              <img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-              <span class="hidden lg:flex lg:items-center">
-                <span class="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-white" aria-hidden="true">Tom Cook</span>
-                <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400 dark:text-white"></i>
-              </span>
-            </button>
-            <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
-              <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Sign out</a>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10">
+            <div class="space-y-2 py-6">
+              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Product</a>
+              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Features</a>
+              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Marketplace</a>
+              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Company</a>
+            </div>
+            <div class="py-6">
+              <a href="/login" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </header>
+  <script>
+    // Open Mobile Menu
+    var closeButton = document.getElementById('OpenButton');
+    var mmenuElement = document.querySelector('.mmenu');
+    closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
 
-    <main class="py-10">
-      <div class="px-4 sm:px-6 lg:px-8">
-        <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+    // Close Mobile Menu
+    var closeButton = document.getElementById('CloseButton');
+    var mmenuElement = document.querySelector('.mmenu');
+    closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
+  </script>
+  <!-- Nav Bar: End -->
 
+  <!-- Hero Section: Start -->
+  <div class="relative isolate px-6 pt-14 lg:px-8">
+    <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+      <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
+    <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+      <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+        <div class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20">
+          Announcing our next round of funding. <a href="#" class="font-semibold text-indigo-600"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
-    </main>
+      <div class="text-center">
+        <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Data to enrich your online business</h1>
+        <p class="mt-6 text-lg leading-8 text-gray-600">Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat fugiat aliqua.</p>
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+          <a href="#" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Get started</a>
+          <a href="#" class="text-sm font-semibold leading-6 text-gray-900">Learn more <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+      <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+    </div>
   </div>
-</div>
+  <!-- Hero Section: End -->
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const button = document.getElementById('user-menu-button');
-    const menu = document.getElementById('user-menu');
-
-    button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', !expanded);
-      menu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (event) => {
-      if (!button.contains(event.target) && !menu.contains(event.target)) {
-        button.setAttribute('aria-expanded', 'false');
-        menu.classList.add('hidden');
-      }
-    });
-  });
-</script>
-<script>
-  // Open Mobile Menu
-  var closeButton = document.getElementById('OpenButton');
-  var mmenuElement = document.querySelector('.mmenu');
-  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
-
-  // Close Mobile Menu
-  var closeButton = document.getElementById('CloseButton');
-  var mmenuElement = document.querySelector('.mmenu');
-  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
-</script>
+  <!-- Footer: Start -->
+  <footer>
+    <div class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
+      <nav class="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">About</a>
+        </div>
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">Blog</a>
+        </div>
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">Jobs</a>
+        </div>
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">Press</a>
+        </div>
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">Accessibility</a>
+        </div>
+        <div class="pb-6">
+          <a href="#" class="text-sm leading-6 text-gray-600 ">Partners</a>
+        </div>
+      </nav>
+      <div class="mt-10 flex justify-center space-x-10">
+        <a href="#" class="text-gray-400 ">
+          <span class="sr-only">Twitter</span>
+          <i class="fa-brands fa-x-twitter fa-xl"></i>
+        </a>
+        <a href="#" class="text-gray-400 ">
+          <span class="sr-only">Instagram</span>
+          <i class="fa-brands fa-instagram fa-xl"></i>
+        </a>
+        <a href="#" class="text-gray-400 ">
+          <span class="sr-only">GitHub</span>
+          <i class="fa-brands fa-github fa-xl"></i>
+        </a>
+        <a href="#" class="text-gray-400 ">
+          <span class="sr-only">YouTube</span>
+          <i class="fa-brands fa-youtube fa-xl"></i>
+        </a>
+      </div>
+      <p class="mt-10 text-center text-xs leading-5 text-gray-500 "><i class="fa-regular fa-copyright"></i> &nbsp;2024 Techmedok, Inc. All rights reserved.</p>
+    </div>
+  </footer>
+  <!-- Footer: End -->
 </body>
 </html>

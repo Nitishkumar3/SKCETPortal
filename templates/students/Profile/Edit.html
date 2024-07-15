@@ -1,0 +1,1502 @@
+<!doctype html>
+<html class="h-full bg-white dark:bg-gray-900 dark:text-white">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - SKCET</title>
+    <link href="../../assets/output2.css" rel="stylesheet">
+    <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: "Inter", sans-serif;
+        }
+    </style>
+</head>
+
+<body class="h-full">
+  <div>
+  <!-- Mobile Menu -->
+  <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-900/80"></div>
+    <div class="fixed inset-0 flex">
+      <div class="relative mr-16 flex w-full max-w-xs flex-1">
+        <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+          <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+            <span class="sr-only">Close sidebar</span>
+            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sidebar component, swap this element with another sidebar if you like -->
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 dark:bg-gray-900 ring-1 ring-white/10">
+          <div class="flex h-16 shrink-0 items-center">
+            <img class="h-8 w-auto" src="/static/888.png" alt="Your Company">
+          </div>
+          <nav class="flex flex-1 flex-col">
+            <ul role="list" class="flex flex-1 flex-col gap-y-7">
+              <li>
+                <ul role="list" class="-mx-2 space-y-1">
+                  <li>
+                    <a href="{{url_for('students.Dashboard')}}" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                      <i class="fa-regular fa-house fa-lg"></i> Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{{url_for('students.Profile')}}" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                        <i class="fa-regular fa-user fa-lg"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a href="{{url_for('students.Hackathons')}}" class="text-white hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold items-center">
+                        <i class="fa-regular fa-calendar-circle-user fa-lg"></i> Hackathons
+                    </a>
+                  </li>
+
+                </ul>
+              </li>
+
+              <li class="mt-auto">
+                <a href="{{url_for('students.Logout')}}" class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-white hover:bg-indigo-700 dark:hover:bg-gray-800 hover:text-white items-center">
+                    <i class="fa-solid fa-right-from-bracket fa-lg"></i> Logout
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Static Sidebar for Desktop -->
+  <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 dark:bg-gray-900 ring-1 ring-white/10">
+      <div class="flex h-16 shrink-0 items-center">
+        <img class="h-8 w-auto" src="/static/888.png" alt="Your Company">
+      </div>
+      <nav class="flex flex-1 flex-col">
+        <ul role="list" class="flex flex-1 flex-col gap-y-7">
+          <li>
+            <ul role="list" class="-mx-2 space-y-1">
+              <li>
+                <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 dark:hover:bg-gray-800 group items-center flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                  <i class="fa-regular fa-house fa-lg"></i> Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="{{url_for('students.Profile')}}" class="bg-indigo-700 dark:bg-gray-800 text-white group flex gap-x-3 items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <i class="fa-regular fa-user fa-lg"></i> Profile
+                </a>
+              </li>
+              <li>
+                <a href="{{url_for('students.Hackathons')}}" class=" text-white hover:bg-indigo-700 dark:hover:bg-gray-800 items-center group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold">
+                    <i class="fa-regular fa-calendar-circle-user fa-lg"></i> Hackathons
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="mt-auto">
+            <a href="{{url_for('students.Logout')}}" class="group -mx-2 flex gap-x-3 items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 dark:hover:bg-gray-800 text-white">
+                <i class="fa-solid fa-right-from-bracket fa-lg"></i> Logout
+            </a>
+          </li> 
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  
+  <div class="lg:pl-72">
+    <!-- Header -->
+    <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 dark:bg-gray-900 dark:border-white/10">
+      <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+        <span class="sr-only">Open sidebar</span>
+        <i class="fa-regular fa-bars fa-lg dark:text-white"></i>
+      </button>
+
+      <!-- Separator -->
+      <!-- <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div> -->
+
+      <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+        <div class="relative flex flex-1"></div>
+        <div class="flex items-center gap-x-4 lg:gap-x-6">
+          
+          <!-- Separator -->
+          <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
+
+          <!-- Profile dropdown -->
+          <div class="relative">
+            <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+              <span class="sr-only">Open user menu</span>
+              <!-- <img class="h-8 w-8 rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt=""> -->
+              <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt="">
+              <span class="hidden lg:flex lg:items-center">
+                <span class="ml-4 text-sm font-semibold leading-6 text-gray-900 dark:text-white" aria-hidden="true">{{name}}</span>
+                <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400 dark:text-white"></i>
+              </span>
+            </button>
+            <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+              <a href="{{url_for('students.Logout')}}" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Logout</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+            <main class="py-10">
+                <div class="px-4 sm:px-6 lg:px-8">
+                    <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+                        <h2 class="font-semibold text-gray-900 py-2 text-xl">Profile</h2>
+                        <hr class="py-2">
+                        <form action="/profile/edit" method="post">
+                            <div class="space-y-12">
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Details
+                                        </h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Personal Details.
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label for="first-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">First
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="first-name" id="first-name"
+                                                    value="{{data.first_name}}"
+                                                    class="first-name block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="first-name-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="last-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Last
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="last-name" id="last-name"
+                                                    value="{{data.last_name}}"
+                                                    class="last-name block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="last-name-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="register-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">RollNumber</label>
+                                            <div class="mt-2">
+                                                <input id="register-number" name="register-number" type="text" readonly
+                                                    value="{{data.RollNumber}}"
+                                                    class="register-number block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="register-number-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="mobile-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Mobile
+                                                Number</label>
+                                            <div class="mt-2">
+                                                <input id="mobile-number" name="mobile-number" type="text"
+                                                    value="{{data.mobile_number}}"
+                                                    class="mobile-number block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="mobile-number-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="gender"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
+                                            <div class="mt-2">
+                                                <select id="gender" name="gender"
+                                                    class="gender block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option {% if data.gender=='Male' %} selected {% endif %}>Male
+                                                    </option>
+                                                    <option {% if data.gender=='Female' %} selected {% endif %}>Female
+                                                    </option>
+                                                    <option {% if data.gender=='Others' %} selected {% endif %}>Others
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="gender-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="dob"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Date of
+                                                Birth</label>
+                                            <div class="mt-2">
+                                                <input id="dob" name="dob" type="date" value="{{ data.dob }}"
+                                                    class="dob block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="dob-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="personal-email"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Personal Email
+                                                ID</label>
+                                            <div class="mt-2">
+                                                <input id="personal-email" name="personal-email" type="text"
+                                                    value="{{ data.personal_email }}"
+                                                    class="personal-email block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="personal-email-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="college-email"
+                                                class="block text-sm font-medium leading-6 text-gray-900">College Email
+                                                ID</label>
+                                            <div class="mt-2">
+                                                <input id="college-email" name="college-email" type="text" readonly
+                                                    value="{{ data.Email }}"
+                                                    class="college-email block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="college-email-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="first-graduate"
+                                                class="block text-sm font-medium leading-6 text-gray-900">First
+                                                Graduate</label>
+                                            <div class="mt-2">
+                                                <select id="first-graduate" name="first-graduate"
+                                                    class="first-graduate block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option {% if data.first_graduate=='No' %} selected {% endif %}>No
+                                                    </option>
+                                                    <option {% if data.first_graduate=='Yes' %} selected {% endif %}>Yes
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="first-graduate-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="emis-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">HSC School
+                                                EMIS Number</label>
+                                            <div class="mt-2">
+                                                <input id="emis-number" name="emis-number" type="text"
+                                                    value="{{ data.emis_number }}"
+                                                    class="emis-number block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="emis-number-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-2 sm:col-start-1">
+                                            <label for="religion"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Religion</label>
+                                            <div class="mt-2">
+                                                <input id="religion" name="religion" type="text"
+                                                    value="{{ data.religion }}"
+                                                    class="religion block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="religion-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label for="community"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Community</label>
+                                            <div class="mt-2">
+                                                <select id="community" name="community"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="BC" {% if data.community=='BC' %} selected {% endif
+                                                        %}>BC</option>
+                                                    <option value="MBC" {% if data.community=='MBC' %} selected {% endif
+                                                        %}>MBC</option>
+                                                    <option value="SC" {% if data.community=='SC' %} selected {% endif
+                                                        %}>SC</option>
+                                                    <option value="ST" {% if data.community=='ST' %} selected {% endif
+                                                        %}>ST</option>
+                                                    <option value="OC" {% if data.community=='OC' %} selected {% endif
+                                                        %}>OC</option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="community-error"></p>
+                                        </div>
+
+                                        <div class="sm:col-span-2">
+                                            <label for="sub-caste"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Sub -
+                                                Caste</label>
+                                            <div class="mt-2">
+                                                <input id="sub-caste" name="sub-caste" type="text"
+                                                    value="{{ data.sub_caste }}"
+                                                    class="sub-caste block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="sub-caste-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="nationality"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Nationality</label>
+                                            <div class="mt-2">
+                                                <select id="nationality" name="nationality"
+                                                    class="nationality block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option {% if data.nationality=='India' %} selected {% endif %}
+                                                        value="India">India</option>
+                                                    <option {% if data.nationality=='Others' %} selected {% endif %}
+                                                        value="Others">Others</option>
+                                                </select>
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="nationality-error"></p>
+                                        </div>
+                                        <div class="sm:col-span-3" id="country-name-container" style="display: none;">
+                                            <label for="country-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Country
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input id="country-name" name="country-name" type="text"
+                                                    value="{{ data.country_name }}"
+                                                    class="country-name block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                            </div>
+                                            <p class="mt-2 text-sm text-red-600" id="country-name-error"></p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Government IDs</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Government ID
+                                            Numbers.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label for="aadhaar-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Aadhaar
+                                                Number</label>
+                                            <div class="mt-2">
+                                                <input id="aadhaar-number" name="aadhaar-number" type="text"
+                                                    value="{{data.aadhaar_number}}"
+                                                    class="aadhaar-number-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="aadhaar-number-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="pan-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">PAN
+                                                Number</label>
+                                            <div class="mt-2">
+                                                <input id="pan-number" name="pan-number" type="text"
+                                                    value="{{data.pan_number}}"
+                                                    class="pan-number-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="pan-number-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="voter-id"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Voter
+                                                ID</label>
+                                            <div class="mt-2">
+                                                <input id="voter-id" name="voter-id" type="text"
+                                                    value="{{data.voter_id}}"
+                                                    class="voter-id-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="voter-id-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Address</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Address.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="col-span-full">
+                                            <label for="permanent-address"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Permanent
+                                                Address</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="permanent-address" id="permanent-address"
+                                                    value="{{data.permanent_address}}"
+                                                    class="permanent-address-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="permanent-address-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2 sm:col-start-1">
+                                            <label for="city"
+                                                class="block text-sm font-medium leading-6 text-gray-900">City</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="city" id="city" value="{{data.city}}"
+                                                    class="city-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="city-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label for="state"
+                                                class="block text-sm font-medium leading-6 text-gray-900">State</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="state" id="state" value="{{data.state}}"
+                                                    class="state-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="state-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label for="postal-code"
+                                                class="block text-sm font-medium leading-6 text-gray-900">PIN
+                                                code</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="postal-code" id="postal-code"
+                                                    value="{{data.postal_code}}"
+                                                    class="postal-code-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="postal-code-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-full">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" id="same-as-permanent" name="same-as-permanent"
+                                                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                                <label for="same-as-permanent" class="ml-2 block text-sm text-gray-900">
+                                                    Communication address is same as permanent address
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-full">
+                                            <label for="communication-address"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Communication
+                                                Address</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="communication-address"
+                                                    id="communication-address" value="{{data.communication_address}}"
+                                                    class="communication-address-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="communication-address-error" class="mt-1 text-sm text-red-600">
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2 sm:col-start-1">
+                                            <label for="communication-city"
+                                                class="block text-sm font-medium leading-6 text-gray-900">City</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="communication-city" id="communication-city"
+                                                    value="{{data.communication_city}}"
+                                                    class="communication-city-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="communication-city-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label for="communication-state"
+                                                class="block text-sm font-medium leading-6 text-gray-900">State</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="communication-state" id="communication-state"
+                                                    value="{{data.communication_state}}"
+                                                    class="communication-state-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="communication-state-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label for="communication-postal-code"
+                                                class="block text-sm font-medium leading-6 text-gray-900">PIN
+                                                code</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="communication-postal-code"
+                                                    id="communication-postal-code"
+                                                    value="{{data.communication_postal_code}}"
+                                                    class="communication-postal-code-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="communication-postal-code-error"
+                                                    class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Parent Details</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Parent Details.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label for="father-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Father's
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="father-name" id="father-name"
+                                                    value="{{data.father_name}}"
+                                                    class="father-name-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="father-name-error" class="mt-1 text-sm text-red-600"></p>
+                                                <p id="parent-guardian-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="father-mobile"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Father's
+                                                Mobile Number</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="father-mobile" id="father-mobile"
+                                                    value="{{data.father_mobile}}"
+                                                    class="father-mobile-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="father-mobile-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="mother-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Mother's
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="mother-name" id="mother-name"
+                                                    value="{{data.mother_name}}"
+                                                    class="mother-name-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="mother-name-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="mother-mobile"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Mother's
+                                                Mobile Number</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="mother-mobile" id="mother-mobile"
+                                                    value="{{data.mother_mobile}}"
+                                                    class="mother-mobile-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="mother-mobile-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="father-occupation"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Father's
+                                                Occupation</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="father-occupation" id="father-occupation"
+                                                    value="{{data.father_occupation}}"
+                                                    class="father-occupation-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="father-occupation-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="mother-occupation"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Mother's
+                                                Occupation</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="mother-occupation" id="mother-occupation"
+                                                    value="{{data.mother_occupation}}"
+                                                    class="mother-occupation-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="mother-occupation-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="guardian-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Guardian's
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="guardian-name" id="guardian-name"
+                                                    value="{{data.guardian_name}}"
+                                                    class="guardian-name-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="guardian-name-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="guardian-mobile"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Guardian's
+                                                Mobile Number</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="guardian-mobile" id="guardian-mobile"
+                                                    value="{{data.guardian_mobile}}"
+                                                    class="guardian-mobile-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="guardian-mobile-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label
+                                                class="block text-sm font-medium leading-6 text-gray-900">Orphan</label>
+                                            <div class="mt-2">
+                                                <select id="orphan" name="orphan"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option {% if data.orphan=='No' %} selected {% endif %}>No</option>
+                                                    <option {% if data.orphan=='Yes' %} selected {% endif %}>Yes
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="annual-income"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Annual
+                                                Family Income</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="annual-income" id="annual-income"
+                                                    value="{{data.annual_income}}"
+                                                    class="annual-income-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="annual-income-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Health Details</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Health Details.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-2">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Health
+                                                Issues</label>
+                                            <div class="mt-2">
+                                                <select id="health-issues" name="health-issues"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="No" {% if data.health_issues=='No' %} selected {%
+                                                        endif %}>No</option>
+                                                    <option value="Yes" {% if data.health_issues=='Yes' %} selected {%
+                                                        endif %}>Yes</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-4">
+                                            <label for="health-issues-details"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Issues</label>
+                                            <div class="mt-2">
+                                                <input id="health-issues-details" name="health-issues-details"
+                                                    type="text" value="{{data.health_issues_details}}"
+                                                    class="health-issues-details-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="health-issues-details-error" class="mt-1 text-sm text-red-600">
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Differently Abled
+                                        </h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Disability Details.
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Differently
+                                                Abled</label>
+                                            <div class="mt-2">
+                                                <select id="differently-abled" name="differently-abled"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="No" {% if data.differently_abled=='No' %} selected {%
+                                                        endif %}>No</option>
+                                                    <option value="Yes" {% if data.differently_abled=='Yes' %} selected
+                                                        {% endif %}>Yes</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="disability-type"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Type of
+                                                Differently abled</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="disability-type" id="disability-type"
+                                                    value="{{data.disability_type}}"
+                                                    class="disability-type-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="disability-type-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="disability-percentage"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Disability
+                                                Percentage</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="disability-percentage"
+                                                    id="disability-percentage" value="{{data.disability_percentage}}"
+                                                    class="disability-percentage-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="disability-percentage-error" class="mt-1 text-sm text-red-600">
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="udid"
+                                                class="block text-sm font-medium leading-6 text-gray-900">UDID</label>
+                                            <div class="mt-2">
+                                                <input id="udid" name="udid" type="text" value="{{data.udid}}"
+                                                    class="udid-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="udid-error" class="mt-1 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Bank Details</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Bank Details.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-4">
+                                            <label for="bank-account-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Name (as in
+                                                Bank account)</label>
+                                            <div class="mt-2">
+                                                <input id="bank-account-name" name="bank-account-name" type="text"
+                                                    value="{{data.bank_account_name}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="bank-account-name-error" class="text-sm text-red-600 mt-2"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="bank-name"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Bank
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="bank-name" id="bank-name"
+                                                    value="{{data.bank_name}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="bank-name-error" class="text-sm text-red-600 mt-2"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="branch"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Branch</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="branch" id="branch" value="{{data.branch}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="branch-error" class="text-sm text-red-600 mt-2"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="account-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Account
+                                                Number</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="account-number" id="account-number"
+                                                    value="{{data.account_number}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="account-number-error" class="text-sm text-red-600 mt-2"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label for="ifsc-code"
+                                                class="block text-sm font-medium leading-6 text-gray-900">IFSC
+                                                code</label>
+                                            <div class="mt-2">
+                                                <input type="text" name="ifsc-code" id="ifsc-code"
+                                                    value="{{data.ifsc_code}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="ifsc-code-error" class="text-sm text-red-600 mt-2"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Admission Details
+                                        </h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Admission Details.
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-2">
+                                            <label
+                                                class="block text-sm font-medium leading-6 text-gray-900">Degree</label>
+                                            <div class="mt-2">
+                                                <select id="degree" name="degree"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="B.E." {% if data.degree=='B.E.' %} selected {% endif
+                                                        %}>B.E.</option>
+                                                    <option value="M.E." {% if data.degree=='M.E.' %} selected {% endif
+                                                        %}>M.E.</option>
+                                                    <option value="B.Tech" {% if data.degree=='B.Tech' %} selected {%
+                                                        endif %}>B.Tech</option>
+                                                    <option value="M.Tech Integrated" {% if
+                                                        data.degree=='M.Tech Integrated' %} selected {% endif %}>M.Tech
+                                                        Integrated</option>
+                                                    <option value="MBA" {% if data.degree=='MBA' %} selected {% endif
+                                                        %}>MBA</option>
+                                                </select>
+                                                <p id="degree-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-4">
+                                            <label
+                                                class="block text-sm font-medium leading-6 text-gray-900">Department</label>
+                                            <div class="mt-2">
+                                                <select id="department" name="department"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="Information Technology (IT)" {% if
+                                                        data.department=='Information Technology (IT)' %} selected {%
+                                                        endif %}>Information Technology (IT)</option>
+                                                    <option value="Civil Engineering" {% if
+                                                        data.department=='Civil Engineering' %} selected {% endif %}>
+                                                        Civil Engineering</option>
+                                                    <option value="Computer Science and Design (CSD)" {% if
+                                                        data.department=='Computer Science and Design (CSD)' %} selected
+                                                        {% endif %}>Computer Science and Design (CSD)</option>
+                                                    <option value="Computer Science and Engineering (CSE)" {% if
+                                                        data.department=='Computer Science and Engineering (CSE)' %}
+                                                        selected {% endif %}>Computer Science and Engineering (CSE)
+                                                    </option>
+                                                    <option value="Cyber Security (CSY)" {% if
+                                                        data.department=='Cyber Security (CSY)' %} selected {% endif %}>
+                                                        Cyber Security (CSY)</option>
+                                                    <option value="Electrical and Electronics Engineering (EEE)" {% if
+                                                        data.department=='Electrical and Electronics Engineering (EEE)'
+                                                        %} selected {% endif %}>Electrical and Electronics Engineering
+                                                        (EEE)</option>
+                                                    <option value="Electronics and Communication Engineering (ECE)" {%
+                                                        if
+                                                        data.department=='Electronics and Communication Engineering (ECE)'
+                                                        %} selected {% endif %}>Electronics and Communication
+                                                        Engineering (ECE)</option>
+                                                    <option value="Mechanical Engineering" {% if
+                                                        data.department=='Mechanical Engineering' %} selected {% endif
+                                                        %}>Mechanical Engineering</option>
+                                                    <option value="Mechatronics Engineering" {% if
+                                                        data.department=='Mechatronics Engineering' %} selected {% endif
+                                                        %}>Mechatronics Engineering</option>
+                                                    <option value="Artificial Intelligence And Data Science (AI & DS)"
+                                                        {% if
+                                                        data.department=='Artificial Intelligence And Data Science (AI & DS)'
+                                                        %} selected {% endif %}>Artificial Intelligence And Data Science
+                                                        (AI & DS)</option>
+                                                    <option value="Computer Science and Business Systems (CSBS)" {% if
+                                                        data.department=='Computer Science and Business Systems (CSBS)'
+                                                        %} selected {% endif %}>Computer Science and Business Systems
+                                                        (CSBS)</option>
+                                                </select>
+                                                <p id="department-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label
+                                                class="block text-sm font-medium leading-6 text-gray-900">Section</label>
+                                            <div class="mt-2">
+                                                <select id="section" name="section"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="A" {% if data.section=='A' %} selected {% endif %}>A
+                                                    </option>
+                                                    <option value="B" {% if data.section=='B' %} selected {% endif %}>B
+                                                    </option>
+                                                    <option value="C" {% if data.section=='C' %} selected {% endif %}>C
+                                                    </option>
+                                                </select>
+                                                <p id="section-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="batch"
+                                                class="block text-sm font-medium leading-6 text-gray-900">Batch</label>
+                                            <div class="mt-2">
+                                                <input id="batch" name="batch" type="text" value="{{data.batch}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="batch-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Admission
+                                                mode</label>
+                                            <div class="mt-2">
+                                                <select id="admission-mode" name="admission-mode"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="Government Quota" {% if
+                                                        data.admission_mode=='Government Quota' %} selected {% endif %}>
+                                                        Government Quota</option>
+                                                    <option value="Management Quota" {% if
+                                                        data.admission_mode=='Management Quota' %} selected {% endif %}>
+                                                        Management Quota</option>
+                                                    <option value="Sports Quota" {% if
+                                                        data.admission_mode=='Sports Quota' %} selected {% endif %}>
+                                                        Sports Quota</option>
+                                                    <option value="Ex Servicemen Quota" {% if
+                                                        data.admission_mode=='Ex Servicemen Quota' %} selected {% endif
+                                                        %}>Ex Servicemen Quota</option>
+                                                </select>
+                                                <p id="admission-mode-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">7.5
+                                                Quota</label>
+                                            <div class="mt-2">
+                                                <select id="quota" name="quota"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="No" {% if data.quota=='No' %} selected {% endif %}>No
+                                                    </option>
+                                                    <option value="Yes" {% if data.quota=='Yes' %} selected {% endif %}>
+                                                        Yes</option>
+                                                </select>
+                                                <p id="quota-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Course
+                                                Type</label>
+                                            <div class="mt-2">
+                                                <select id="course-type" name="course-type"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="Regular" {% if data.course_type=='Regular' %}
+                                                        selected {% endif %}>Regular</option>
+                                                    <option value="Part time" {% if data.course_type=='Part time' %}
+                                                        selected {% endif %}>Part time</option>
+                                                </select>
+                                                <p id="course-type-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Lateral
+                                                Entry</label>
+                                            <div class="mt-2">
+                                                <select id="lateral-entry" name="lateral-entry"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="No" {% if data.lateral_entry=='No' %} selected {%
+                                                        endif %}>No</option>
+                                                    <option value="Yes" {% if data.lateral_entry=='Yes' %} selected {%
+                                                        endif %}>Yes</option>
+                                                </select>
+                                                <p id="lateral-entry-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900">Date of
+                                                Admission</label>
+                                            <div class="mt-2">
+                                                <input id="date-of-admission" name="date-of-admission" type="date"
+                                                    value="{{data.date_of_admission}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="date-of-admission-error" class="mt-2 text-sm text-red-600"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label for="tnea-application-number"
+                                                class="block text-sm font-medium leading-6 text-gray-900">TNEA
+                                                Application Number</label>
+                                            <div class="mt-2">
+                                                <input id="tnea-application-number" name="tnea-application-number"
+                                                    type="text" value="{{data.tnea_application_number}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="tnea-application-number-error" class="mt-2 text-sm text-red-600">
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Hostel Details</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Hostel Details.</p>
+                                    </div>
+
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900"
+                                                for="hosteller">Hosteller</label>
+                                            <div class="mt-2">
+                                                <select id="hosteller" name="hosteller"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="No" {% if data.hosteller=='No' %} selected {% endif
+                                                        %}>No</option>
+                                                    <option value="Yes" {% if data.hosteller=='Yes' %} selected {% endif
+                                                        %}>Yes</option>
+                                                    <option value="Outside PG" {% if data.hosteller=='Outside PG' %}
+                                                        selected {% endif %}>Outside PG</option>
+                                                </select>
+                                                <p id="hosteller-error" class="text-sm text-red-600 mt-1"></p>
+                                            </div>
+                                        </div>
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900"
+                                                for="hostel-type">Hostel Type</label>
+                                            <div class="mt-2">
+                                                <select id="hostel-type" name="hostel-type"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="">-Select-</option>
+                                                    <option value="Paid" {% if data.hostel_type=='Paid' %} selected {%
+                                                        endif %}>Paid</option>
+                                                    <option value="Free" {% if data.hostel_type=='Free' %} selected {%
+                                                        endif %}>Free</option>
+                                                </select>
+                                                <p id="hostel-type-error" class="text-sm text-red-600 mt-1"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-span-full">
+                                            <label for="pg-address"
+                                                class="block text-sm font-medium leading-6 text-gray-900">PG
+                                                Address</label>
+                                            <div class="mt-2">
+                                                <input id="pg-address" name="pg-address" type="text"
+                                                    value="{{data.pg_address}}"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                                <p id="pg-address-error" class="text-sm text-red-600 mt-1"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+                                    <div>
+                                        <h2 class="text-base font-semibold leading-7 text-gray-900">Status</h2>
+                                        <p class="mt-1 text-sm leading-6 text-gray-600">Fill in the Status.</p>
+                                    </div>
+                                    <div
+                                        class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                                        <div class="sm:col-span-3">
+                                            <label class="block text-sm font-medium leading-6 text-gray-900"
+                                                for="status">Status</label>
+                                            <div class="mt-2">
+                                                <select id="status" name="status"
+                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                                                    <option value="Active" {% if data.status=='Active' %} selected {%
+                                                        endif %}>Active</option>
+                                                    <option value="Dropout" {% if data.status=='Dropout' %} selected {%
+                                                        endif %}>Dropout</option>
+                                                    <option value="Discontinued" {% if data.status=='Discontinued' %}
+                                                        selected {% endif %}>Discontinued</option>
+                                                </select>
+                                                <p id="status-error" class="text-sm text-red-600 mt-1"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="form-message" class="mt-2 text-sm"></div>
+                                <div class="mt-6 flex items-center justify-end gap-x-6">
+                                    <button type="submit"
+                                        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+                                </div>
+                                
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.getElementById('user-menu-button');
+            const menu = document.getElementById('user-menu');
+
+            button.addEventListener('click', () => {
+                const expanded = button.getAttribute('aria-expanded') === 'true';
+                button.setAttribute('aria-expanded', !expanded);
+                menu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!button.contains(event.target) && !menu.contains(event.target)) {
+                    button.setAttribute('aria-expanded', 'false');
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+
+            const fields = [
+                { id: 'first-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'First Name is Required.' },
+                { id: 'last-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Last Name is Required.' },
+                { id: 'register-number', regex: /^[A-Za-z0-9]+$/, errorMsg: 'Register Number should be Alphanumeric.' },
+                { id: 'mobile-number', regex: /^\d{10}$/, errorMsg: 'Invalid Mobile Number!' },
+                { id: 'dob', regex: /.+/, errorMsg: 'Date of Birth is Required.' },
+                { id: 'personal-email', regex: /^[^@]+@(?!skcet\.ac\.in$)[^@]+$/, errorMsg: 'It should not contain the domain "@skcet.ac.in".' },
+                { id: 'college-email', regex: /@skcet\.ac\.in$/, errorMsg: 'It should contain the domain "@skcet.ac.in".' },
+                { id: 'emis-number', regex: /^\d+$/, errorMsg: 'EMIS is Required.' },
+                { id: 'religion', regex: /^[A-Za-z]+$/, errorMsg: 'Religion is Required.' },
+                { id: 'community', regex: /^(?!-Select-).+$/, errorMsg: 'Community is required.' },
+                { id: 'sub-caste', regex: /^[A-Za-z\s]+$/, errorMsg: 'Sub-Caste is Required.' },
+                { id: 'aadhaar-number', regex: /^\d{12}$/, errorMsg: 'Aadhaar Number should be 12 digits.' },
+                { id: 'pan-number', regex: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, errorMsg: 'PAN Number should follow the format AAAAA9999A.', optional: true },
+                { id: 'voter-id', regex: /^[A-Za-z0-9]+$/, errorMsg: 'Voter ID should be alphanumeric.', optional: true },
+                { id: 'permanent-address', regex: /.+/, errorMsg: 'Permanent Address should not be blank.' },
+                { id: 'city', regex: /^[A-Za-z\s]+$/, errorMsg: 'City is Required.' },
+                { id: 'state', regex: /^[A-Za-z\s]+$/, errorMsg: 'State is Required.' },
+                { id: 'postal-code', regex: /^\d{6}$/, errorMsg: 'PIN code should be 6 digits.' },
+                { id: 'communication-address', regex: /.+/, errorMsg: 'Communication Address should not be blank.' },
+                { id: 'communication-city', regex: /^[A-Za-z\s]+$/, errorMsg: 'City is Required.' },
+                { id: 'communication-state', regex: /^[A-Za-z\s]+$/, errorMsg: 'State is Required.' },
+                { id: 'communication-postal-code', regex: /^\d{6}$/, errorMsg: 'PIN code should be 6 digits.' },
+                { id: 'annual-income', regex: /^\d+$/, errorMsg: 'Annual Family Income is Required.' },
+                { id: 'disability-type', regex: /^[A-Za-z\s]+$/, errorMsg: 'Type of Differently is Required.' },
+                { id: 'disability-percentage', regex: /^\d+$/, errorMsg: 'Disability Percentage is Required.' },
+                { id: 'udid', regex: /^\d+$/, errorMsg: 'UDID is Required' },
+                { id: 'health-issues-details', regex: /^[A-Za-z\s]+$/, errorMsg: 'Health Issues Details are Required.' },
+                { id: 'bank-account-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Name (as in Bank account) is required.' },
+                { id: 'bank-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Bank Name is required.' },
+                { id: 'branch', regex: /^[A-Za-z\s]+$/, errorMsg: 'Branch is required.' },
+                { id: 'account-number', regex: /^\d+$/, errorMsg: 'Account Number should contain only numbers.' },
+                { id: 'ifsc-code', regex: /^[A-Za-z0-9]+$/, errorMsg: 'IFSC code should be alphanumeric.' },
+                { id: 'degree', regex: /^(?!-Select-).+$/, errorMsg: 'Degree is required.' },
+                { id: 'department', regex: /^(?!-Select-).+$/, errorMsg: 'Department is required.' },
+                { id: 'year', regex: /^(?!-Select-).+$/, errorMsg: 'Year is required.' },
+                { id: 'section', regex: /^(?!-Select-).+$/, errorMsg: 'Section is required.' },
+                { id: 'batch', regex: /^\d{4}$/, errorMsg: 'Batch is required. (Eg: 2026)' },
+                { id: 'admission-mode', regex: /^(?!-Select-).+$/, errorMsg: 'Admission mode is required.' },
+                { id: 'quota', regex: /^(?!-Select-).+$/, errorMsg: '7.5 Quota is required.' },
+                { id: 'course-type', regex: /^(?!-Select-).+$/, errorMsg: 'Course Type is required.' },
+                { id: 'lateral-entry', regex: /^(?!-Select-).+$/, errorMsg: 'Lateral Entry is required.' },
+                { id: 'date-of-admission', regex: /.+/, errorMsg: 'Date of Admission is required.' },
+                { id: 'tnea-application-number', regex: /.+/, errorMsg: 'TNEA Application Number is required.', optional: true  },
+                { id: 'hosteller', regex: /^(?!-Select-).+$/, errorMsg: 'Hosteller status is required.' },
+                { id: 'hostel-type', regex: /^(?!-Select-).+$/, errorMsg: 'Hostel Type is required.' },
+                { id: 'pg-address', regex: /.+/, errorMsg: 'PG Address is required.' },
+                { id: 'father-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Father\'s Name should contain only letters and spaces.', optional: true },
+                { id: 'father-mobile', regex: /^\d{10}$/, errorMsg: 'Invalid Mobile Number!', optional: true },
+                { id: 'father-occupation', regex: /^[A-Za-z\s]+$/, errorMsg: 'Father\'s Occupation should contain only letters and spaces.', optional: true },
+                { id: 'mother-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Mother\'s Name should contain only letters and spaces.', optional: true },
+                { id: 'mother-mobile', regex: /^\d{10}$/, errorMsg: 'Invalid Mobile Number!', optional: true },
+                { id: 'mother-occupation', regex: /^[A-Za-z\s]+$/, errorMsg: 'Mother\'s Occupation should contain only letters and spaces.', optional: true },
+                { id: 'guardian-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Guardian\'s Name should contain only letters and spaces.', optional: true },
+                { id: 'guardian-mobile', regex: /^\d{10}$/, errorMsg: 'Invalid Mobile Number!', optional: true },
+
+                { id: 'nationality', regex: /^(?!-Select-).+$/, errorMsg: 'Nationality is required.' },
+                { id: 'country-name', regex: /^[A-Za-z\s]+$/, errorMsg: 'Country Name is required and should contain only letters and spaces.', optional: true },
+
+            ];
+
+
+
+            const parentGuardianFields = [
+        { id: 'father-name', group: 'parents' },
+        { id: 'father-mobile', group: 'parents' },
+        { id: 'father-occupation', group: 'parents' },
+        { id: 'mother-name', group: 'parents' },
+        { id: 'mother-mobile', group: 'parents' },
+        { id: 'mother-occupation', group: 'parents' },
+        { id: 'guardian-name', group: 'guardian' },
+        { id: 'guardian-mobile', group: 'guardian' }
+    ];
+
+    const differentlyAbledSelect = document.getElementById('differently-abled');
+    const healthIssuesSelect = document.getElementById('health-issues');
+    const hostellerSelect = document.getElementById('hosteller');
+    const hostelTypeField = document.getElementById('hostel-type').closest('.sm\\:col-span-3');
+    const pgAddressField = document.getElementById('pg-address').closest('.col-span-full');
+
+    const toggleFieldsVisibility = (selectElement, fieldsToToggle) => {
+        const isVisible = selectElement.value === 'Yes';
+        fieldsToToggle.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            const fieldContainer = field.closest('.sm\\:col-span-3, .sm\\:col-span-4');
+
+            if (fieldContainer) {
+                fieldContainer.style.display = isVisible ? 'block' : 'none';
+            }
+
+            if (!isVisible) {
+                field.value = '';
+                if (errorElement) errorElement.textContent = '';
+            }
+        });
+    };
+
+    const toggleHostelFieldsVisibility = () => {
+        const hostellerValue = hostellerSelect.value;
+
+        if (hostellerValue === 'Yes') {
+            hostelTypeField.style.display = 'block';
+            pgAddressField.style.display = 'none';
+        } else if (hostellerValue === 'Outside PG') {
+            hostelTypeField.style.display = 'none';
+            pgAddressField.style.display = 'block';
+        } else {
+            hostelTypeField.style.display = 'none';
+            pgAddressField.style.display = 'none';
+        }
+
+        if (hostelTypeField.style.display === 'none') {
+            document.getElementById('hostel-type').value = '';
+            document.getElementById('hostel-type-error').textContent = '';
+        }
+        if (pgAddressField.style.display === 'none') {
+            document.getElementById('pg-address').value = '';
+            document.getElementById('pg-address-error').textContent = '';
+        }
+    };
+
+    differentlyAbledSelect.addEventListener('change', () => {
+        toggleFieldsVisibility(differentlyAbledSelect, ['disability-type', 'disability-percentage', 'udid']);
+    });
+
+    healthIssuesSelect.addEventListener('change', () => {
+        toggleFieldsVisibility(healthIssuesSelect, ['health-issues-details']);
+    });
+
+    hostellerSelect.addEventListener('change', toggleHostelFieldsVisibility);
+
+    toggleFieldsVisibility(differentlyAbledSelect, ['disability-type', 'disability-percentage', 'udid']);
+    toggleFieldsVisibility(healthIssuesSelect, ['health-issues-details']);
+    toggleHostelFieldsVisibility();
+
+    const validateParentGuardianFields = () => {
+        let parentsFieldsFilled = true;
+        let guardianFieldsFilled = true;
+        let errorMessage = '';
+
+        // Check if guardian fields are filled
+        const guardianFields = parentGuardianFields.filter(field => field.group === 'guardian');
+        guardianFieldsFilled = guardianFields.every(field => {
+            const input = document.getElementById(field.id);
+            return input && input.value.trim() !== '';
+        });
+
+        // If guardian fields are not filled, check parent fields
+        if (!guardianFieldsFilled) {
+            const parentFields = parentGuardianFields.filter(field => field.group === 'parents');
+            parentsFieldsFilled = parentFields.every(field => {
+                const input = document.getElementById(field.id);
+                return input && input.value.trim() !== '';
+            });
+        }
+
+        // Validate filled fields
+        parentGuardianFields.forEach(field => {
+            const input = document.getElementById(field.id);
+            if (input && input.value.trim() !== '') {
+                const fieldDefinition = fields.find(f => f.id === field.id);
+                if (fieldDefinition && !fieldDefinition.regex.test(input.value.trim())) {
+                    const errorElement = document.getElementById(`${field.id}-error`);
+                    if (errorElement) {
+                        errorElement.textContent = fieldDefinition.errorMsg;
+                    }
+                    if (field.group === 'parents') parentsFieldsFilled = false;
+                    if (field.group === 'guardian') guardianFieldsFilled = false;
+                } else {
+                    const errorElement = document.getElementById(`${field.id}-error`);
+                    if (errorElement) {
+                        errorElement.textContent = '';
+                    }
+                }
+            }
+        });
+
+        if (!parentsFieldsFilled && !guardianFieldsFilled) {
+            errorMessage = 'Please fill in either both parents\' details or guardian\'s details correctly.';
+        }
+
+        const errorElement = document.getElementById('parent-guardian-error');
+        if (errorElement) {
+            errorElement.textContent = errorMessage;
+        }
+
+        return errorMessage === '';
+    };
+
+    parentGuardianFields.forEach(field => {
+        const input = document.getElementById(field.id);
+        if (input) {
+            input.addEventListener('input', validateParentGuardianFields);
+        }
+    });
+
+    fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const error = document.getElementById(`${field.id}-error`);
+
+        if (input) {
+            input.addEventListener('input', () => {
+                if (!field.optional && !field.regex.test(input.value)) {
+                    error.textContent = field.errorMsg;
+                } else {
+                    error.textContent = '';
+                }
+            });
+        }
+    });
+
+    const nationalitySelect = document.getElementById('nationality');
+    const countryNameContainer = document.getElementById('country-name-container');
+
+    const toggleCountryNameVisibility = () => {
+        const isOthers = nationalitySelect.value === 'Others';
+        countryNameContainer.style.display = isOthers ? 'block' : 'none';
+        const countryNameInput = document.getElementById('country-name');
+        const countryNameError = document.getElementById('country-name-error');
+        if (!isOthers) {
+            countryNameInput.value = '';
+            countryNameError.textContent = '';
+        }
+    };
+
+    nationalitySelect.addEventListener('change', toggleCountryNameVisibility);
+
+    // Call this function initially to set the correct visibility
+    toggleCountryNameVisibility();
+
+    const formMessage = document.getElementById('form-message');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent form submission by default
+        let isValid = true;
+
+        fields.forEach(field => {
+            const input = document.getElementById(field.id);
+            const error = document.getElementById(`${field.id}-error`);
+
+            if (input) {
+                const isDifferentlyAbledField = ['disability-type', 'disability-percentage', 'udid'].includes(field.id);
+                const isHealthIssuesField = field.id === 'health-issues-details';
+                const isHostelTypeField = field.id === 'hostel-type';
+                const isPGAddressField = field.id === 'pg-address';
+                const isCountryNameField = field.id === 'country-name';
+
+                if ((isDifferentlyAbledField && differentlyAbledSelect.value === 'Yes') ||
+                    (isHealthIssuesField && healthIssuesSelect.value === 'Yes') ||
+                    (isHostelTypeField && hostellerSelect.value === 'Yes') ||
+                    (isPGAddressField && hostellerSelect.value === 'Outside PG') ||
+                    (isCountryNameField && nationalitySelect.value === 'Others') ||
+                    (!isDifferentlyAbledField && !isHealthIssuesField && !isHostelTypeField && !isPGAddressField && !isCountryNameField)) {
+
+                    if (!field.optional && !field.regex.test(input.value)) {
+                        error.textContent = field.errorMsg;
+                        isValid = false;
+                    } else {
+                        error.textContent = '';
+                    }
+                }
+            }
+        });
+
+        if (!validateParentGuardianFields()) {
+            isValid = false;
+        }
+
+        if (isValid) {
+        // Create a FormData object from the form
+        const formData = new FormData(form);
+
+        // Send the data to the server using Fetch API
+        fetch('/profile/edit', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            // The server is redirecting, so we should follow the redirect
+            window.location.href = response.url;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            formMessage.textContent = 'An error occurred while submitting the form. Please try again.';
+            formMessage.classList.add('text-red-600');
+            formMessage.classList.remove('text-green-600');
+            formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    } else {
+        formMessage.textContent = 'Please fill in all required details.';
+        formMessage.classList.add('text-red-600');
+        formMessage.classList.remove('text-green-600');
+        formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+});
+    </script>
+    <script>
+        // Open Mobile Menu
+        var closeButton = document.getElementById('OpenButton');
+        var mmenuElement = document.querySelector('.mmenu');
+        closeButton.addEventListener('click', function () { mmenuElement.style.display = 'block'; });
+
+        // Close Mobile Menu
+        var closeButton = document.getElementById('CloseButton');
+        var mmenuElement = document.querySelector('.mmenu');
+        closeButton.addEventListener('click', function () { mmenuElement.style.display = 'none'; });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sameAsPermanentCheckbox = document.getElementById('same-as-permanent');
+            const permanentAddressInput = document.getElementById('permanent-address');
+            const cityInput = document.getElementById('city');
+            const stateInput = document.getElementById('state');
+            const postalCodeInput = document.getElementById('postal-code');
+
+            const communicationAddressInput = document.getElementById('communication-address');
+            const communicationCityInput = document.getElementById('communication-city');
+            const communicationStateInput = document.getElementById('communication-state');
+            const communicationPostalCodeInput = document.getElementById('communication-postal-code');
+
+            const communicationFields = [
+                communicationAddressInput,
+                communicationCityInput,
+                communicationStateInput,
+                communicationPostalCodeInput
+            ];
+
+            function updateCommunicationAddress() {
+                if (sameAsPermanentCheckbox.checked) {
+                    communicationAddressInput.value = permanentAddressInput.value;
+                    communicationCityInput.value = cityInput.value;
+                    communicationStateInput.value = stateInput.value;
+                    communicationPostalCodeInput.value = postalCodeInput.value;
+
+                    communicationFields.forEach(field => {
+                        field.setAttribute('readonly', true);
+                        field.classList.add('bg-gray-100');
+                    });
+                } else {
+                    communicationFields.forEach(field => {
+                        field.value = ''; // Clear the field
+                        field.removeAttribute('readonly');
+                        field.classList.remove('bg-gray-100');
+                    });
+                }
+            }
+
+            sameAsPermanentCheckbox.addEventListener('change', updateCommunicationAddress);
+
+            // Update communication address when permanent address changes
+            [permanentAddressInput, cityInput, stateInput, postalCodeInput].forEach(input => {
+                input.addEventListener('input', () => {
+                    if (sameAsPermanentCheckbox.checked) {
+                        updateCommunicationAddress();
+                    }
+                });
+            });
+
+            // Initial check in case the checkbox is pre-checked
+            updateCommunicationAddress();
+        });
+    </script>
+</body>
+
+</html>
