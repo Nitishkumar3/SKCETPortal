@@ -56,18 +56,20 @@ def SendVerificationEmail(UserName, email, VerificationCode):
     if Mail.SendMail(subject, body, email):
         mongo.db.StaffVerification.insert_one({'UserName': UserName, 'VerificationCode': VerificationCode, 'Verified': False})
 
+
+
 def IsUserVerified(UserName):
     VerifiedStatus = mongo.db.StaffVerification.find_one({'RollNumber': UserName, 'Verified': True})
     return VerifiedStatus is not None
 
-def PasswordResetMail(UserName, email, ResetKey):
-    subject = "SKCET - Password Reset"
-    link = "http://localhost:5000/staff/resetkey/" + str(ResetKey)
-    body = "Password Reset Code: " + str(ResetKey) + f" {link}"
-    if Mail.SendMail(subject, body, email):
-        currenttime = datetime.utcnow()
-        mongo.db.PasswordReset.insert_one({'UserName': UserName, 'ResetKey': ResetKey, 'CreatedAt': currenttime, 'ExpirationTime': currenttime + timedelta(hours=6)})
-        mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
+# def PasswordResetMail(UserName, email, ResetKey):
+#     subject = "SKCET - Password Reset"
+#     link = "http://localhost:5000/staff/resetkey/" + str(ResetKey)
+#     body = "Password Reset Code: " + str(ResetKey) + f" {link}"
+#     if Mail.SendMail(subject, body, email):
+#         currenttime = datetime.utcnow()
+#         mongo.db.PasswordReset.insert_one({'UserName': UserName, 'ResetKey': ResetKey, 'CreatedAt': currenttime, 'ExpirationTime': currenttime + timedelta(hours=6)})
+#         mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
 
 @StaffsBP.route('/')
 @LoggedInUser
@@ -380,6 +382,11 @@ def VerifyAccount(RollNumber):
 
     return render_template('staffs/VerifyAccount.html', RollNumber=RollNumber)
 
+
+
+
+
+
 @StaffsBP.route('/login', methods=['GET', 'POST'])
 @NotLoggedInUser
 def Login():
@@ -420,6 +427,62 @@ def Login():
             flash('Invalid Login or password', 'error')
     return render_template('staffs/Login.html')
 
+# @StaffsBP.route('/forgotpassword', methods=['GET', 'POST'])
+# @NotLoggedInUser
+# def ForgotPassword():
+#     if request.method == 'POST':
+#         login = request.form['login']
+
+#         if "@" in login:
+#             user = mongo.db.Staffs.find_one({'Email': login})
+#         else:
+#             user = mongo.db.Staffs.find_one({'UserName': login})
+
+#         if not user:
+#             flash('Invalid Username or Email ID', 'error')
+#             return redirect(url_for('staffs.ForgotPassword'))
+
+#         ResetKey = AES256.GenerateRandomString(32)
+#         PasswordResetMail(user["UserName"], user["Email"], ResetKey)
+
+#         flash('A Password Reset Link has been sent to your Email! Please check your Inbox and Follow the Instructions', 'info')
+#     return render_template('staffs/ForgotPassword.html')
+
+# @StaffsBP.route('/resetkey/<ResetKey>', methods=['GET', 'POST'])
+# @NotLoggedInUser
+# def ResetPassword(ResetKey):
+#     if request.method == 'POST':
+#         NewPassword = request.form['password']
+            
+#         ResetData = mongo.db.PasswordReset.find_one({'ResetKey': ResetKey})
+
+#         if not ResetData:
+#             flash('Invalid or Expired reset link. Please initiate the password reset process again.', 'error')
+        
+#         PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$', NewPassword) else True
+
+#         if PasswordCheck:
+#             flash('Invalid password. It should be at least 8 characters and contain at least one lowercase letter, one uppercase letter, one special character, and one number.', 'error')
+#             return redirect(url_for('staffs.ResetPassword', ResetKey=ResetKey))
+        
+#         user = mongo.db.Staffs.find_one({'UserName': ResetData['UserName']})
+
+#         passwordH = SHA256.HashPassword(NewPassword, user["UserName"])
+
+#         mongo.db.Staffs.update_one({'UserName': ResetData['UserName']}, {'$set': {'Password': passwordH}})
+
+#         mongo.db.PasswordReset.delete_one({'ResetKey': ResetKey})
+        
+#         flash('Password reset successful. Try Loggin in.', 'info')
+#         return redirect(url_for('staffs.Login'))
+#     return render_template('staffs/ResetPassword.html', ResetKey=ResetKey)
+
+from flask import flash, redirect, url_for, render_template, request
+from Modules.Mail import SendMail
+from Modules import AES256, SHA256
+import re
+from datetime import datetime, timedelta
+
 @StaffsBP.route('/forgotpassword', methods=['GET', 'POST'])
 @NotLoggedInUser
 def ForgotPassword():
@@ -436,6 +499,17 @@ def ForgotPassword():
             return redirect(url_for('staffs.ForgotPassword'))
 
         ResetKey = AES256.GenerateRandomString(32)
+        
+        # Store the reset key in the database
+        mongo.db.PasswordReset.insert_one({
+            'UserName': user['UserName'],
+            'ResetKey': ResetKey,
+            'CreatedAt': datetime.utcnow(),
+            'ExpirationTime': datetime.utcnow() + timedelta(hours=24)
+        })
+        mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
+
+        # Send password reset email
         PasswordResetMail(user["UserName"], user["Email"], ResetKey)
 
         flash('A Password Reset Link has been sent to your Email! Please check your Inbox and Follow the Instructions', 'info')
@@ -451,6 +525,7 @@ def ResetPassword(ResetKey):
 
         if not ResetData:
             flash('Invalid or Expired reset link. Please initiate the password reset process again.', 'error')
+            return redirect(url_for('staffs.ForgotPassword'))
         
         PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$', NewPassword) else True
 
@@ -466,9 +541,62 @@ def ResetPassword(ResetKey):
 
         mongo.db.PasswordReset.delete_one({'ResetKey': ResetKey})
         
-        flash('Password reset successful. Try Loggin in.', 'info')
+        # Send password reset confirmation email
+        PasswordResetConfirmationMail(user["Email"])
+        
+        flash('Password reset successful. You can now log in with your new password.', 'success')
         return redirect(url_for('staffs.Login'))
     return render_template('staffs/ResetPassword.html', ResetKey=ResetKey)
+
+def PasswordResetMail(username, email, reset_key):
+    subject = "Reset Your Password - SKCET Staff Portal"
+    reset_link = url_for('staffs.ResetPassword', ResetKey=reset_key, _external=True)
+    
+    # Plain text version
+    plain_text = f"""
+    Reset Your Password - SKCET Staff Portal
+
+    Dear {username},
+
+    We received a request to reset your password. Use the link below to set up a new password for your account:
+
+    {reset_link}
+
+    If you didn't request this, you can safely ignore this email.
+
+    This password reset link will expire in 24 hours.
+
+    SKCET Staff Support Team
+    """
+
+    # HTML version
+    html_content = render_template('email/StaffPasswordResetEmail.html', username=username, reset_link=reset_link)
+
+    SendMail(subject, plain_text, email, html_content)
+
+def PasswordResetConfirmationMail(email):
+    subject = "Password Reset Successful - SKCET Staff Portal"
+    login_link = url_for('staffs.Login', _external=True)
+    
+    # Plain text version
+    plain_text = f"""
+    Password Reset Successful - SKCET Staff Portal
+
+    Your password has been successfully reset.
+
+    If you did not perform this action, please contact our support team immediately.
+
+    Log in to your account: {login_link}
+
+    SKCET Staff Support Team
+    """
+
+    # HTML version
+    html_content = render_template('email/StaffResetPasswordConfirmationEmail.html', login_link=login_link)
+
+    SendMail(subject, plain_text, email, html_content)
+
+
 
 @StaffsBP.route('/logout')
 @LoggedInUser
