@@ -48,7 +48,7 @@ def NotLoggedInUser(view_func):
     @wraps(view_func)
     def decorated_function(*args, **kwargs):
         if 'SessionKey' in session and 'RollNumber' in session:
-            return redirect(url_for('Index'))
+            return redirect(url_for('students.Dashboard'))
         return view_func(*args, **kwargs)
     return decorated_function
 
@@ -567,6 +567,119 @@ def EditProfile():
             name += " " + user["last_name"]
         return render_template('students/Profile/Edit.html', data = user, name = name)
 
+
+schedule = {
+    "Monday": [
+        {"start": "09:00", "end": "09:40", "title": "SVT"},
+        {"start": "09:40", "end": "10:35", "title": "BDA LAB"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "BDA LAB"},
+        {"start": "11:55", "end": "12:50", "title": "BDA LAB"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "WSN"},
+        {"start": "15:35", "end": "16:30", "title": "MAD"}
+    ],
+    "Tuesday": [
+        {"start": "09:00", "end": "09:40", "title": "CD"},
+        {"start": "09:40", "end": "10:35", "title": "CNS"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "MAD"},
+        {"start": "11:55", "end": "12:50", "title": "BDA"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "WSN"},
+        {"start": "14:45", "end": "15:35", "title": "BDA"},
+        {"start": "15:35", "end": "16:30", "title": "CD"}
+    ],
+    "Wednesday": [
+        {"start": "09:00", "end": "09:40", "title": "SVT"},
+        {"start": "09:40", "end": "10:35", "title": "CD"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "CNS"},
+        {"start": "11:55", "end": "12:50", "title": "WSN"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "MAD"},
+        {"start": "15:35", "end": "16:30", "title": "MAD LAB"}
+    ],
+    "Thursday": [
+        {"start": "09:00", "end": "09:40", "title": "CNS"},
+        {"start": "09:40", "end": "10:35", "title": "WSN"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "BDA"},
+        {"start": "11:55", "end": "12:50", "title": "CD"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "BDA"},
+        {"start": "14:45", "end": "15:35", "title": "CD"},
+        {"start": "15:35", "end": "16:30", "title": "MAD"}
+    ],
+    "Friday": [
+        {"start": "09:00", "end": "09:40", "title": "WSN"},
+        {"start": "09:40", "end": "10:35", "title": "MINI PROJECT"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "MINI PROJECT"},
+        {"start": "11:55", "end": "12:50", "title": "MINI PROJECT"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "CNS"},
+        {"start": "15:35", "end": "16:30", "title": "BDA"}
+    ]
+}
+
+articles = [
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "Mar 16, 2024",
+        "department": "Marketing",
+        "title": "Boost Your Social Media Presence",
+        "description": "Learn effective strategies to enhance your brand's social media engagement and reach.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "Jane Doe",
+        "designation": "Social Media Specialist"
+    },
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "Apr 22, 2024",
+        "department": "Technology",
+        "title": "The Future of AI in Business",
+        "description": "Explore how artificial intelligence is reshaping various industries and what it means for your business.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "John Smith",
+        "designation": "AI Researcher"
+    },
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "May 5, 2024",
+        "department": "Finance",
+        "title": "Investment Strategies for 2024",
+        "description": "Discover the latest trends and expert advice on where to invest your money in the current economic climate.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "Emma Johnson",
+        "designation": "Financial Advisor"
+    }
+]
+
+announcements = [
+    {
+        "name": "Eduardo Benz",
+        "time": datetime.now() - timedelta(days=6),
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam.",
+        "dp_url": "https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+    {
+        "name": "Jason Meyers",
+        "time": datetime.now() - timedelta(hours=2),
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam. Scelerisque amet elit non sit ut tincidunt condimentum. Nisl ultrices eu venenatis diam.",
+        "dp_url": "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+    {
+        "name": "Alice Johnson",
+        "time": datetime.now() - timedelta(minutes=30),
+        "info": "Quick update on the project. Everything is going well!",
+        "dp_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+]  
+
 @StudentsBP.route('/dashboard')
 @LoggedInUser
 def Dashboard():
@@ -576,12 +689,30 @@ def Dashboard():
     if user.get("last_name"):
         name += " " + user["last_name"]
 
-    return render_template('students/Dashboard.html', name = name)
+    return render_template('students/Dashboard.html', name=name, schedule=schedule, articles=articles, announcements=announcements)
+
+@StudentsBP.route('/timetable')
+@LoggedInUser
+def Timetable():
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
+
+    return render_template('students/Timetable/Index.html', name=name, schedule=schedule)
+
 
 @StudentsBP.route('/hackathons')
 @LoggedInUser
 def Hackathons():
     RollNumber = session['RollNumber'].upper()
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
+
     results = list(mongo.db.HackathonParticipations.find({"TeamDetails": RollNumber}))
     for index, item in enumerate(results, start=1):
         item['sno'] = index
@@ -590,12 +721,17 @@ def Hackathons():
     for result in results:
         if '_id' in result:
             result['_id'] = str(result['_id'])
-    return render_template('students/Hackathons/Index.html', hackathons=results)
+    return render_template('students/Hackathons/Index.html', hackathons=results, RollNumber=RollNumber, name = name)
 
 @StudentsBP.route('/hackathons/add', methods=['GET', 'POST'])
 @LoggedInUser
 def HackathonsAdd():
-    RollNumber = session['RollNumber']
+    RollNumber = session['RollNumber'].upper()
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
 
     if request.method == 'POST':
 
@@ -630,7 +766,7 @@ def HackathonsAdd():
 
             # Handle event photos
             EventPhotos = request.files.getlist('EventPhotos')
-            for Photo in EventPhotos[:5]:  # Limit to 5 photos
+            for Photo in EventPhotos[:3]:  # Limit to 5 photos
                 if Photo and AllowedFile(Photo.filename):
                     Extension = Photo.filename.rsplit('.', 1)[1].lower()
                     Filename = GenerateRandomFilename(Extension)
@@ -639,7 +775,7 @@ def HackathonsAdd():
 
             # Handle certificate photos
             CertificatePhotos = request.files.getlist('CertificatePhotos')
-            for Photo in CertificatePhotos[:5]:  # Limit to 5 photos
+            for Photo in CertificatePhotos[:3]:  # Limit to 5 photos
                 if Photo and AllowedFile(Photo.filename):
                     Extension = Photo.filename.rsplit('.', 1)[1].lower()
                     Filename = GenerateRandomFilename(Extension)
@@ -650,7 +786,7 @@ def HackathonsAdd():
         mongo.db.HackathonParticipations.insert_one(EventData)
         return redirect(url_for('students.Hackathons'))
 
-    return render_template('students/Hackathons/Add.html', RollNumber=RollNumber)
+    return render_template('students/Hackathons/Add.html', RollNumber=RollNumber, name = name)
 
 @StudentsBP.route('/hackathon/<string:id>')
 @LoggedInUser
@@ -662,6 +798,12 @@ def ViewHackathon(id):
 @LoggedInUser
 def EditHackathon(id):
     RollNumber = session['RollNumber']
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
+
     hackathon = mongo.db.HackathonParticipations.find_one({"_id": ObjectId(id)})
    
     if request.method == 'POST':
@@ -743,7 +885,7 @@ def EditHackathon(id):
         mongo.db.HackathonParticipations.update_one({"_id": ObjectId(id)}, {"$set": EventData})
         return redirect(url_for('students.Hackathons'))
    
-    return render_template('students/Hackathons/Edit.html', hackathon=hackathon, RollNumber=RollNumber)
+    return render_template('students/Hackathons/Edit.html', hackathon=hackathon, RollNumber=RollNumber, name = name)
 
 @StudentsBP.route('/hackathon/delete/<string:id>')
 @LoggedInUser

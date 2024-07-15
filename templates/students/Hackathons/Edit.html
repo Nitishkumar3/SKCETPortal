@@ -1,204 +1,483 @@
+<!-- Edit.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Event Details - SKCET</title>
+    <title>Edit Hackathon Details - SKCET</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: "Inter", sans-serif;
+        }
         .Hidden { display: none; }
         .photo-container { display: flex; flex-wrap: wrap; gap: 10px; }
         .photo { width: 100px; height: 100px; object-fit: cover; }
         .error { color: red; }
     </style>
+    <link href="/static/outputfull2.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Edit Event Details</h1>
-    <form id="eventForm" action="{{ url_for('students.EditHackathon', id=hackathon._id) }}" method="POST" enctype="multipart/form-data">
-        <label for="EventName">Event Name:</label>
-        <input type="text" id="EventName" name="EventName" value="{{ hackathon.EventName }}" required><br><br>
+<body class="h-full">
+  <div>
+    <!-- Mobile Menu -->
+    <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+      <div class="fixed inset-0 bg-gray-900/80"></div>
+      <div class="fixed inset-0 flex">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+            <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+              <span class="sr-only">Close sidebar</span>
+              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <label for="ProjectTitle">Project Title:</label>
-        <input type="text" id="ProjectTitle" name="ProjectTitle" value="{{ hackathon.ProjectTitle }}" required><br><br>
-
-        <label for="TeamName">Team Name:</label>
-        <input type="text" id="TeamName" name="TeamName" value="{{ hackathon.TeamName }}" required><br><br>
-
-        <label for="Date">Date:</label>
-        <input type="date" id="Date" name="Date" value="{{ hackathon.Date }}" required><br><br>
-        
-        <label for="Mode">Mode:</label>
-        <select id="Mode" name="Mode" required>
-            <option value="Online" {% if hackathon.Mode == 'Online' %}selected{% endif %}>Online</option>
-            <option value="Offline" {% if hackathon.Mode == 'Offline' %}selected{% endif %}>Offline</option>
-        </select><br><br>
-        
-        <div id="VenueContainer" class="{% if hackathon.Mode != 'Offline' %}Hidden{% endif %}">
-            <label for="Venue">Venue:</label>
-            <input type="text" id="Venue" name="Venue" value="{{ hackathon.Venue }}"><br><br>
+          <!-- Sidebar component for mobile -->
+          <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 ring-1 ring-white/10">
+            <div class="flex h-16 shrink-0 items-center">
+              <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+            </div>
+            <nav class="flex flex-1 flex-col">
+              <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" class="space-y-1">
+                    <li>
+                      <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-house fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Dashboard</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Hackathons</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-light fa-calendar-days fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Time Table</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="mt-auto">
+                  <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
-        
-        <label for="TeamDetails">Team Details:</label>
-        <div id="TeamDetailsContainer">
-            {% for member in hackathon.TeamDetails %}
-                <div>
-                    <input type="text" name="TeamDetails[]" value="{{ member }}" {% if loop.first %}readonly{% endif %} required>
-                    {% if not loop.first %}
-                        <button type="button" class="RemoveTeamDetail">Remove</button>
-                    {% endif %}
+      </div>
+    </div>
+
+    <!-- Static Sidebar for Desktop -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ring-1 ring-white/10">
+        <div class="flex h-16 shrink-0 items-center">
+          <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+        </div>
+        <nav class="flex flex-1 flex-col">
+          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+            <li>
+              <ul role="list" class="space-y-1">
+                <li>
+                  <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-house fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Profile</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Hackathons</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-light fa-calendar-days fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Time Table</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="mt-auto">
+              <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                <span class="flex items-center justify-center w-10">
+                  <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                </span>
+                <span class="ml-3">Logout</span>
+              </a>
+            </li> 
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="lg:pl-72">
+      <!-- Header -->
+      <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+          <span class="sr-only">Open sidebar</span>
+          <i class="fa-regular fa-bars fa-lg"></i>
+        </button>
+
+        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          <div class="relative flex flex-1"></div>
+          <div class="flex items-center gap-x-4 lg:gap-x-6">
+            
+            <!-- Separator -->
+            <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
+
+            <!-- Profile dropdown -->
+            <div class="relative">
+              <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">Open user menu</span>
+                <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt="">
+                <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">{{name}}</span>
+                  <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400"></i>
+                </span>
+              </button>
+              <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+                <a href="{{url_for('students.Logout')}}" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main class="py-10">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+                    <h2 class="font-semibold text-gray-900 py-2 text-xl">Edit Hackathon Details</h2>
+                    <hr class="py-2">
+                    <form id="eventForm" action="{{ url_for('students.EditHackathon', id=hackathon._id) }}" method="POST" enctype="multipart/form-data">
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label for="EventName" class="block text-sm font-medium leading-6 text-gray-900">Event Name</label>
+                              <div class="mt-2">
+                                  <input type="text" name="EventName" id="EventName" value="{{ hackathon.EventName }}" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" required>
+                              </div>
+                          </div>
+
+                          <div class="sm:col-span-3">
+                              <label for="ProjectTitle" class="block text-sm font-medium leading-6 text-gray-900">Project Title</label>
+                              <div class="mt-2">
+                                  <input type="text" id="ProjectTitle" name="ProjectTitle" value="{{ hackathon.ProjectTitle }}" required class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                          </div>
+
+                          <div class="sm:col-span-3">
+                              <label for="TeamName" class="block text-sm font-medium leading-6 text-gray-900">Team Name</label>
+                              <div class="mt-2">
+                                  <input type="text" id="TeamName" name="TeamName" value="{{ hackathon.TeamName }}" required class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                          </div>
+
+                          <div class="sm:col-span-3">
+                              <label for="Date" class="block text-sm font-medium leading-6 text-gray-900">Date</label>
+                              <div class="mt-2">
+                                  <input type="date" id="Date" name="Date" value="{{ hackathon.Date }}" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                          </div>
+
+                          <div class="sm:col-span-3">
+                              <label for="Mode" class="block text-sm font-medium leading-6 text-gray-900">Mode</label>
+                              <div class="mt-2">
+                                  <select class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="Mode" name="Mode" required>
+                                      <option value="Online" {% if hackathon.Mode == 'Online' %}selected{% endif %}>Online</option>
+                                      <option value="Offline" {% if hackathon.Mode == 'Offline' %}selected{% endif %}>Offline</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div id="VenueContainer" class="sm:col-span-3 {% if hackathon.Mode != 'Offline' %}hidden{% endif %}">
+                              <label for="Venue" class="block text-sm font-medium leading-6 text-gray-900">Venue</label>
+                              <div class="mt-2">
+                                  <input type="text" id="Venue" name="Venue" value="{{ hackathon.Venue }}" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                          </div>
+
+                          <div class="sm:col-span-6">
+                              <label for="TeamDetails" class="block text-sm font-medium leading-6 text-gray-900">Team Details</label>
+                              <div id="TeamDetailsContainer" class="mt-2 space-y-2">
+                                  {% for member in hackathon.TeamDetails %}
+                                  <div class="flex items-center space-x-2">
+                                      <input type="text" name="TeamDetails[]" value="{{ member }}" {% if loop.first %}readonly{% endif %} required class="flex-grow p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                      {% if not loop.first %}
+                                      <button type="button" class="RemoveTeamDetail p-2 text-red-600 hover:text-red-800 focus:outline-none">
+                                          <i class="fas fa-minus"></i>
+                                      </button>
+                                      {% endif %}
+                                  </div>
+                                  {% endfor %}
+                              </div>
+                              <button type="button" id="AddTeamDetail" class="mt-2 p-2 text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                                  <i class="fas fa-plus"></i> Add Team Member
+                              </button>
+                          </div>
+
+                          <div class="sm:col-span-3">
+                              <label for="Status" class="block text-sm font-medium leading-6 text-gray-900">Status</label>
+                              <div class="mt-2">
+                                  <select id="Status" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" name="Status" required>
+                                      <option value="Registered" {% if hackathon.Status == 'Registered' %}selected{% endif %}>Registered</option>
+                                      <option value="EventCompleted" {% if hackathon.Status == 'EventCompleted' %}selected{% endif %}>Event Completed</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div id="CompletedEventFields" class="sm:col-span-6 {% if hackathon.Status != 'EventCompleted' %}hidden{% endif %}">
+                              <div class="sm:col-span-3">
+                                  <label for="ParticipatedWon" class="block text-sm font-medium leading-6 text-gray-900">Participated/Won</label>
+                                  <div class="mt-2">
+                                      <select id="ParticipatedWon" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" name="ParticipatedWon">
+                                          <option value="Participated" {% if hackathon.ParticipatedWon == 'Participated' %}selected{% endif %}>Participated</option>
+                                          <option value="Won" {% if hackathon.ParticipatedWon == 'Won' %}selected{% endif %}>Won</option>
+                                      </select>
+                                  </div>
+                              </div>
+
+                              <div id="WonFields" class="mt-4 {% if hackathon.ParticipatedWon != 'Won' %}hidden{% endif %}">
+                                  <div class="grid grid-cols-2 gap-4">
+                                      <div>
+                                          <label class="block text-sm font-medium leading-6 text-gray-900" for="Position">Position</label>
+                                          <div class="mt-2">
+                                              <input type="text" id="Position" name="Position" value="{{ hackathon.Position }}" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                          </div>
+                                      </div>
+                                      <div>
+                                          <label class="block text-sm font-medium leading-6 text-gray-900" for="PrizeAmount">Prize Amount</label>
+                                          <div class="mt-2">
+                                              <input type="number" id="PrizeAmount" name="PrizeAmount" value="{{ hackathon.PrizeAmount }}" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <div class="mt-4">
+                                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                      <div>
+                                          <label class="block text-sm font-medium leading-6 text-gray-900" for="EventPhotos">Event Photos (min 1, max 5)</label>
+                                          <input type="file" id="EventPhotos" name="EventPhotos" multiple accept=".png,.jpg,.jpeg,.pdf" class="mt-2">
+                                          <div id="EventPhotosContainer" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                              {% for photo in hackathon.EventPhotos %}
+                                              <div class="relative">
+                                                  <img src="{{ photo }}" alt="Event Photo" class="w-full h-24 object-cover rounded">
+                                                  <button type="button" class="RemovePhoto absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full" data-photo="{{ photo }}" data-type="EventPhotos">
+                                                      <i class="fas fa-times"></i>
+                                                  </button>
+                                              </div>
+                                              {% endfor %}
+                                          </div>
+                                      </div>
+                                      <div>
+                                          <label class="block text-sm font-medium leading-6 text-gray-900" for="CertificatePhotos">Certificate Photos (min 1, max 5)</label>
+                                          <input type="file" id="CertificatePhotos" name="CertificatePhotos" multiple accept=".png,.jpg,.jpeg,.pdf" class="mt-2">
+                                          <div id="CertificatePhotosContainer" class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                              {% for photo in hackathon.CertificatePhotos %}
+                                              <div class="relative">
+                                                  <img src="{{ photo }}" alt="Certificate Photo" class="w-full h-24 object-cover rounded">
+                                                  <button type="button" class="RemovePhoto absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full" data-photo="{{ photo }}" data-type="CertificatePhotos">
+                                                      <i class="fas fa-times"></i>
+                                                  </button>
+                                              </div>
+                                              {% endfor %}
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="mt-6 flex items-center justify-end gap-x-6">
+                          <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update</button>
+                      </div>
+                    </form>
                 </div>
-            {% endfor %}
-            <button type="button" id="AddTeamDetail">Add More</button>
-        </div><br><br>
-        
-        <label for="Status">Status:</label>
-        <select id="Status" name="Status" required>
-            <option value="Registered" {% if hackathon.Status == 'Registered' %}selected{% endif %}>Registered</option>
-            <option value="EventCompleted" {% if hackathon.Status == 'EventCompleted' %}selected{% endif %}>Event Completed</option>
-        </select><br><br>
-        
-        <div id="CompletedEventFields" class="{% if hackathon.Status != 'EventCompleted' %}Hidden{% endif %}">
-            <label for="ParticipatedWon">Participated/Won:</label>
-            <select id="ParticipatedWon" name="ParticipatedWon">
-                <option value="Participated" {% if hackathon.ParticipatedWon == 'Participated' %}selected{% endif %}>Participated</option>
-                <option value="Won" {% if hackathon.ParticipatedWon == 'Won' %}selected{% endif %}>Won</option>
-            </select><br><br>
-            
-            <div id="WonFields" class="{% if hackathon.ParticipatedWon != 'Won' %}Hidden{% endif %}">
-                <label for="Position">Position:</label>
-                <input type="text" id="Position" name="Position" value="{{ hackathon.Position }}"><br><br>
-                
-                <label for="PrizeAmount">Prize Amount:</label>
-                <input type="number" id="PrizeAmount" name="PrizeAmount" value="{{ hackathon.PrizeAmount }}"><br><br>
             </div>
-            
-            <label for="EventPhotos">Event Photos (min 1, max 5):</label>
-            <input type="file" id="EventPhotos" name="EventPhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
-            <div id="EventPhotosContainer" class="photo-container">
-                {% for photo in hackathon.EventPhotos %}
-                    <div>
-                        <img src="{{ photo }}" alt="Event Photo" class="photo">
-                        <button type="button" class="RemovePhoto" data-photo="{{ photo }}" data-type="EventPhotos">Remove</button>
-                    </div>
-                {% endfor %}
-            </div>
-            
-            <label for="CertificatePhotos">Certificate Photos (min 1, max 5):</label>
-            <input type="file" id="CertificatePhotos" name="CertificatePhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
-            <div id="CertificatePhotosContainer" class="photo-container">
-                {% for photo in hackathon.CertificatePhotos %}
-                    <div>
-                        <img src="{{ photo }}" alt="Certificate Photo" class="photo">
-                        <button type="button" class="RemovePhoto" data-photo="{{ photo }}" data-type="CertificatePhotos">Remove</button>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        
-        <input type="submit" value="Update">
-    </form>
+      </main>
+    </div>
+  </div>
+<script>
+    $(document).ready(function() {
+// Mode change handler
+$('#Mode').change(function() {
+    if ($(this).val() === 'Offline') {
+        $('#VenueContainer').removeClass('hidden');
+        $('#Venue').prop('required', true);
+    } else {
+        $('#VenueContainer').addClass('hidden');
+        $('#Venue').prop('required', false);
+        $('#Venue').val('');
+    }
+});
 
-    <script>
-        $(document).ready(function() {
-            $('#Mode').change(function() {
-                if ($(this).val() === 'Offline') {
-                    $('#VenueContainer').removeClass('Hidden');
-                    $('#Venue').prop('required', true);
-                } else {
-                    $('#VenueContainer').addClass('Hidden');
-                    $('#Venue').prop('required', false);
-                    $('#Venue').val('');
-                }
-            });
+// Add team detail handler
+$('#AddTeamDetail').click(function() {
+    var newInput = $('<div class="flex items-center space-x-2"><input type="text" name="TeamDetails[]" required class="flex-grow p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"><button type="button" class="RemoveTeamDetail p-2 text-red-600 hover:text-red-800 focus:outline-none"><i class="fas fa-minus"></i></button></div>');
+    $('#TeamDetailsContainer').append(newInput);
+});
 
-            $('#AddTeamDetail').click(function() {
-                var newInput = $('<div><input type="text" name="TeamDetails[]" required><button type="button" class="RemoveTeamDetail">Remove</button></div>');
-                $('#TeamDetailsContainer').append(newInput);
-            });
+// Remove team detail handler
+$(document).on('click', '.RemoveTeamDetail', function() {
+    $(this).parent().remove();
+});
 
-            $(document).on('click', '.RemoveTeamDetail', function() {
-                $(this).parent().remove();
-            });
+// Status change handler
+$('#Status').change(function() {
+    if ($(this).val() === 'EventCompleted') {
+        $('#CompletedEventFields').removeClass('hidden');
+        $('#ParticipatedWon, #EventPhotos, #CertificatePhotos').prop('required', true);
+    } else {
+        $('#CompletedEventFields').addClass('hidden');
+        $('#WonFields').addClass('hidden');
+        $('#ParticipatedWon, #EventPhotos, #CertificatePhotos, #Position, #PrizeAmount').prop('required', false);
+    }
+});
 
-            $('#Status').change(function() {
-                if ($(this).val() === 'EventCompleted') {
-                    $('#CompletedEventFields').removeClass('Hidden');
-                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos').prop('required', true);
-                } else {
-                    $('#CompletedEventFields').addClass('Hidden');
-                    $('#WonFields').addClass('Hidden');
-                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos, #Position, #PrizeAmount').prop('required', false);
-                }
-            });
+// ParticipatedWon change handler
+$('#ParticipatedWon').change(function() {
+    if ($(this).val() === 'Won') {
+        $('#WonFields').removeClass('hidden');
+        $('#Position, #PrizeAmount').prop('required', true);
+    } else {
+        $('#WonFields').addClass('hidden');
+        $('#Position, #PrizeAmount').prop('required', false);
+    }
+});
 
-            $('#ParticipatedWon').change(function() {
-                if ($(this).val() === 'Won') {
-                    $('#WonFields').removeClass('Hidden');
-                    $('#Position, #PrizeAmount').prop('required', true);
-                } else {
-                    $('#WonFields').addClass('Hidden');
-                    $('#Position, #PrizeAmount').prop('required', false);
-                }
-            });
+// File select handler
+function handleFileSelect(event, containerSelector) {
+    const files = event.target.files;
+    const container = $(containerSelector);
 
-            function handleFileSelect(event, containerSelector) {
-                const files = event.target.files;
-                const container = $(containerSelector);
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
 
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = $('<div class="relative"></div>');
+            const img = $('<img>').attr('src', e.target.result).addClass('w-full h-24 object-cover rounded');
+            const removeBtn = $('<button type="button" class="RemovePhoto absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"><i class="fas fa-times"></i></button>');
+            div.append(img).append(removeBtn);
+            container.append(div);
+        }
 
-                    reader.onload = function(e) {
-                        const img = $('<img>').attr('src', e.target.result).addClass('photo');
-                        const removeBtn = $('<button>').text('Remove').addClass('RemovePhoto').attr('type', 'button');
-                        const div = $('<div>').append(img).append(removeBtn);
-                        container.append(div);
-                    }
+        reader.readAsDataURL(file);
+    }
+}
 
-                    reader.readAsDataURL(file);
-                }
-            }
+// Event photos change handler
+$('#EventPhotos').change(function(event) {
+    handleFileSelect(event, '#EventPhotosContainer');
+});
 
-            $('#EventPhotos').change(function(event) {
-                handleFileSelect(event, '#EventPhotosContainer');
-            });
+// Certificate photos change handler
+$('#CertificatePhotos').change(function(event) {
+    handleFileSelect(event, '#CertificatePhotosContainer');
+});
 
-            $('#CertificatePhotos').change(function(event) {
-                handleFileSelect(event, '#CertificatePhotosContainer');
-            });
+// Remove photo handler
+$(document).on('click', '.RemovePhoto', function() {
+    var photoUrl = $(this).data('photo');
+    var photoType = $(this).data('type');
+    $(this).parent().remove();
+    if (photoUrl) {
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'remove_' + photoType,
+            value: photoUrl
+        }).appendTo('#eventForm');
+    }
+});
 
-            $(document).on('click', '.RemovePhoto', function() {
-                var photoUrl = $(this).data('photo');
-                var photoType = $(this).data('type');
-                $(this).parent().remove();
-                if (photoUrl) {
-                    $('<input>').attr({
-                        type: 'hidden',
-                        name: 'remove_' + photoType,
-                        value: photoUrl
-                    }).appendTo('#eventForm');
-                }
-            });
+// Form submission handler
+$('#eventForm').submit(function(e) {
+    const eventPhotos = $('#EventPhotosContainer').children().length;
+    const certificatePhotos = $('#CertificatePhotosContainer').children().length;
 
-            $('#eventForm').submit(function(e) {
-                const eventPhotos = $('#EventPhotosContainer').children().length;
-                const certificatePhotos = $('#CertificatePhotosContainer').children().length;
+    $('.error').remove();
 
-                $('.error').remove();
+    if ($('#Status').val() === 'EventCompleted') {
+        if (eventPhotos < 1 || eventPhotos > 5) {
+            e.preventDefault();
+            $('#EventPhotosContainer').after('<p class="error text-red-500 text-sm mt-1">Please upload between 1 and 5 event photos.</p>');
+        }
+        if (certificatePhotos < 1 || certificatePhotos > 5) {
+            e.preventDefault();
+            $('#CertificatePhotosContainer').after('<p class="error text-red-500 text-sm mt-1">Please upload between 1 and 5 certificate photos.</p>');
+        }
+    }
+});
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-menu');
 
-                if ($('#Status').val() === 'EventCompleted') {
-                    if (eventPhotos < 1 || eventPhotos > 5) {
-                        e.preventDefault();
-                        $('#EventPhotosContainer').after('<p class="error">Please upload between 1 and 5 event photos.</p>');
-                    }
-                    if (certificatePhotos < 1 || certificatePhotos > 5) {
-                        e.preventDefault();
-                        $('#CertificatePhotosContainer').after('<p class="error">Please upload between 1 and 5 certificate photos.</p>');
-                    }
-                }
-            });
-        });
-    </script>
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        button.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+      }
+    });
+  });
+</script>
+<script>
+  // Open Mobile Menu
+  var closeButton = document.getElementById('OpenButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
+
+  // Close Mobile Menu
+  var closeButton = document.getElementById('CloseButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
+</script>
 </body>
 </html>
