@@ -783,6 +783,7 @@ def HackathonsAdd():
             'EventPhotos': [],
             'CertificatePhotos': [],
             'Department': DeptShortCode, 
+            'Batch': Leader["batch"]
         }
 
         if EventData['Mode'] == 'Offline':
@@ -854,6 +855,7 @@ def EditHackathon(id):
             'TeamDetails': FormattedTeamDetails,
             'Status': request.form['Status'],
             'Department': DeptShortCode,
+            'Batch': Leader["batch"]
         }
        
         if EventData['Mode'] == 'Offline':

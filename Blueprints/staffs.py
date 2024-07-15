@@ -218,7 +218,6 @@ def Dashboard():
     name = user["first_name"]
     return render_template("staffs/Dashboard.html", name=name, schedule=schedule, articles=articles, announcements=announcements)
 
-
 @StaffsBP.route('/studentdetails')
 @LoggedInUser
 def StudentDetails():
@@ -244,6 +243,7 @@ def HackathonDetails():
     for result in HackathonDetails:
         if '_id' in result:
             result['_id'] = str(result['_id'])
+
     return render_template("staffs/HackathonDetails/Index.html", hackathons=HackathonDetails, name=name)
 
 @StaffsBP.route('/timetable')
