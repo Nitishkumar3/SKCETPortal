@@ -37,7 +37,7 @@ def NotLoggedInUser(view_func):
     @wraps(view_func)
     def decorated_function(*args, **kwargs):
         if 'SessionKey' in session and 'UserName' in session:
-            return redirect(url_for('staffs.Index'))
+            return redirect(url_for('staffs.Dashboard'))
         return view_func(*args, **kwargs)
     return decorated_function
 
@@ -71,19 +71,191 @@ def IsUserVerified(UserName):
 #         mongo.db.PasswordReset.insert_one({'UserName': UserName, 'ResetKey': ResetKey, 'CreatedAt': currenttime, 'ExpirationTime': currenttime + timedelta(hours=6)})
 #         mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
 
-@StaffsBP.route('/')
+
+def ToShortCode(Degree, Department):
+    if Degree == "B.Tech" and Department == "Information Technology (IT)":
+        return "IT"
+    elif Degree == "B.E." and Department == "Civil Engineering":
+        return "Civil"
+    elif Degree == "B.E." and Department == "Computer Science and Design (CSD)":
+        return "CSD"
+    elif Degree == "B.E." and Department == "Computer Science and Engineering (CSE)":
+        return "CSE"
+    elif Degree == "M.Tech Integrated" and Department == "Computer Science and Engineering (CSE)":
+        return "MTechCSE"
+    elif Degree == "B.E." and Department == "Cyber Security (CSY)":
+        return "CSY"
+    elif Degree == "B.E." and Department == "Electrical and Electronics Engineering (EEE)":
+        return "EEE"
+    elif Degree == "B.E." and Department == "Electronics and Communication Engineering (ECE)":
+        return "ECE"
+    elif Degree == "B.E." and Department == "Mechanical Engineering":
+        return "Mech"
+    elif Degree == "B.E." and Department == "Mechatronics Engineering":
+        return "Mect"
+    elif Degree == "B.Tech" and Department == "Artificial Intelligence And Data Science (AI & DS)":
+        return "AIDS"
+    elif Degree == "B.Tech" and Department == "Computer Science and Business Systems (CSBS)":
+        return "CSBS"
+    else:
+        return ""
+    
+schedule = {
+    "Monday": [
+        {"start": "09:00", "end": "09:40", "title": "SVT"},
+        {"start": "09:40", "end": "10:35", "title": "BDA LAB"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "BDA LAB"},
+        {"start": "11:55", "end": "12:50", "title": "BDA LAB"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "WSN"},
+        {"start": "15:35", "end": "16:30", "title": "MAD"}
+    ],
+    "Tuesday": [
+        {"start": "09:00", "end": "09:40", "title": "CD"},
+        {"start": "09:40", "end": "10:35", "title": "CNS"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "MAD"},
+        {"start": "11:55", "end": "12:50", "title": "BDA"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "WSN"},
+        {"start": "14:45", "end": "15:35", "title": "BDA"},
+        {"start": "15:35", "end": "16:30", "title": "CD"}
+    ],
+    "Wednesday": [
+        {"start": "09:00", "end": "09:40", "title": "SVT"},
+        {"start": "09:40", "end": "10:35", "title": "CD"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "CNS"},
+        {"start": "11:55", "end": "12:50", "title": "WSN"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "MAD"},
+        {"start": "15:35", "end": "16:30", "title": "MAD LAB"}
+    ],
+    "Thursday": [
+        {"start": "09:00", "end": "09:40", "title": "CNS"},
+        {"start": "09:40", "end": "10:35", "title": "WSN"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "BDA"},
+        {"start": "11:55", "end": "12:50", "title": "CD"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "BDA"},
+        {"start": "14:45", "end": "15:35", "title": "CD"},
+        {"start": "15:35", "end": "16:30", "title": "MAD"}
+    ],
+    "Friday": [
+        {"start": "09:00", "end": "09:40", "title": "WSN"},
+        {"start": "09:40", "end": "10:35", "title": "MINI PROJECT"},
+        {"start": "10:35", "end": "11:00", "title": "Break"},
+        {"start": "11:00", "end": "11:55", "title": "MINI PROJECT"},
+        {"start": "11:55", "end": "12:50", "title": "MINI PROJECT"},
+        {"start": "12:50", "end": "13:50", "title": "Break"},
+        {"start": "13:50", "end": "14:45", "title": "SVT"},
+        {"start": "14:45", "end": "15:35", "title": "CNS"},
+        {"start": "15:35", "end": "16:30", "title": "BDA"}
+    ]
+}
+
+articles = [
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "Mar 16, 2024",
+        "department": "Marketing",
+        "title": "Boost Your Social Media Presence",
+        "description": "Learn effective strategies to enhance your brand's social media engagement and reach.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "Jane Doe",
+        "designation": "Social Media Specialist"
+    },
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "Apr 22, 2024",
+        "department": "Technology",
+        "title": "The Future of AI in Business",
+        "description": "Explore how artificial intelligence is reshaping various industries and what it means for your business.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "John Smith",
+        "designation": "AI Researcher"
+    },
+    {
+        "cover_pic": "https://dummyimage.com/800x450/000/fff",
+        "date": "May 5, 2024",
+        "department": "Finance",
+        "title": "Investment Strategies for 2024",
+        "description": "Discover the latest trends and expert advice on where to invest your money in the current economic climate.",
+        "author_pic": "https://dummyimage.com/100x100/000/fff",
+        "author": "Emma Johnson",
+        "designation": "Financial Advisor"
+    }
+]
+
+announcements = [
+    {
+        "name": "Eduardo Benz",
+        "time": datetime.now() - timedelta(days=6),
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam.",
+        "dp_url": "https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+    {
+        "name": "Jason Meyers",
+        "time": datetime.now() - timedelta(hours=2),
+        "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tincidunt nunc ipsum tempor purus vitae id. Morbi in vestibulum nec varius. Et diam cursus quis sed purus nam. Scelerisque amet elit non sit ut tincidunt condimentum. Nisl ultrices eu venenatis diam.",
+        "dp_url": "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+    {
+        "name": "Alice Johnson",
+        "time": datetime.now() - timedelta(minutes=30),
+        "info": "Quick update on the project. Everything is going well!",
+        "dp_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
+    },
+]  
+
+@StaffsBP.route('/dashboard')
 @LoggedInUser
-def Index():
+def Dashboard():
     UserName = session['UserName']
     user = mongo.db.Staffs.find_one({'UserName': UserName})
-    # print(user)
-    students = mongo.db.StudentDetails.find({'degree': user["Degree"], "department": user["Department"]})
-    print()
-    students = list(students)
-    # print(students)
-    # print(len(students))
+    name = user["first_name"]
+    return render_template("staffs/Dashboard.html", name=name, schedule=schedule, articles=articles, announcements=announcements)
 
-    return render_template("staffs/Index.html", students=students)
+
+@StaffsBP.route('/studentdetails')
+@LoggedInUser
+def StudentDetails():
+    UserName = session['UserName']
+    user = mongo.db.Staffs.find_one({'UserName': UserName})
+    students = mongo.db.StudentDetails.find({'degree': user["Degree"], "department": user["Department"]})
+    students = list(students)
+    name = user["first_name"]
+    return render_template("staffs/StudentDetails/Index.html", students=students, name=name)
+
+@StaffsBP.route('/hackathondetails')
+@LoggedInUser
+def HackathonDetails():
+    UserName = session['UserName']
+    user = mongo.db.Staffs.find_one({'UserName': UserName})
+    name = user["first_name"]
+    Department = ToShortCode(user["Degree"], user["Department"])
+    HackathonDetails = list(mongo.db.HackathonParticipations.find({'Department': Department}))
+
+    for index, item in enumerate(HackathonDetails, start=1):
+        item['sno'] = index
+
+    for result in HackathonDetails:
+        if '_id' in result:
+            result['_id'] = str(result['_id'])
+    return render_template("staffs/HackathonDetails/Index.html", hackathons=HackathonDetails, name=name)
+
+@StaffsBP.route('/timetable')
+@LoggedInUser
+def Timetable():
+    UserName = session['UserName']
+    user = mongo.db.Staffs.find_one({'UserName': UserName})
+    name = user["first_name"]
+
+    return render_template('staffs/Timetable/Index.html', name=name, schedule=schedule)
 
 from flask import send_file, request, jsonify
 from io import BytesIO
@@ -359,9 +531,6 @@ def receive_json():
         print(f"Error in receive_json: {str(e)}\n{error_details}")
         return jsonify({"error": str(e), "details": error_details}), 500
 
-            
-            
-       
 @StaffsBP.route('/verifyaccount/<RollNumber>', methods=['GET', 'POST'])
 @NotLoggedInUser
 def VerifyAccount(RollNumber):
@@ -422,7 +591,7 @@ def Login():
             session['SessionKey'] = sessionkey
             session['UserName'] = user["UserName"]
 
-            return redirect(url_for('staffs.Index'))
+            return redirect(url_for('staffs.Dashboard'))
         else:
             flash('Invalid Login or password', 'error')
     return render_template('staffs/Login.html')
@@ -608,4 +777,4 @@ def Logout():
         'UserName': user_name
     })
     session.clear()
-    return redirect(url_for('staffs.Index'))
+    return redirect(url_for('staffs.Dashboard'))
