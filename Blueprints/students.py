@@ -176,6 +176,112 @@ def Login():
             flash('Invalid Login or password', 'error')
     return render_template('students/Login.html')
 
+# from Modules.Mail import SendMail
+
+
+# @StudentsBP.route('/forgotpassword', methods=['GET', 'POST'])
+# @NotLoggedInUser
+# def ForgotPassword():
+#     if request.method == 'POST':
+#         login = request.form['login']
+
+#         if "@" in login:
+#             user = mongo.db.StudentDetails.find_one({'Email': login})
+#         else:
+#             user = mongo.db.StudentDetails.find_one({'RollNumber': login})
+
+#         if not user:
+#             flash('Invalid Username or Email ID', 'error')
+#             return redirect(url_for('students.ForgotPassword'))
+
+#         ResetKey = AES256.GenerateRandomString(32)
+#         PasswordResetMail(user["RollNumber"], user["Email"], ResetKey)
+
+#         flash('A Password Reset Link has been sent to your Email! Please check your Inbox and Follow the Instructions', 'info')
+#     return render_template('students/ForgotPassword.html')
+
+
+# def PasswordResetMail(roll_number, email, reset_key):
+#     subject = "Reset Your Password - SKCET"
+#     reset_link = url_for('students.ResetPassword', key=reset_key, _external=True)
+    
+#     # Plain text version
+#     plain_text = f"""
+#     Reset Your Password - SKCET
+
+#     We received a request to reset your password. Use the link below to set up a new password for your account:
+
+#     {reset_link}
+
+#     If you didn't request this, you can safely ignore this email.
+
+#     This password reset link will expire in 24 hours.
+
+#     SKCET Team
+#     """
+
+#     # HTML version
+#     html_content = render_template('email/forgot_password_email.html', reset_link=reset_link)
+
+#     SendMail(subject, plain_text, email, html_content)
+
+# def PasswordResetConfirmationMail(email):
+#     subject = "Password Reset Successful - SKCET"
+#     login_link = url_for('students.Login', _external=True)
+    
+#     # Plain text version
+#     plain_text = f"""
+#     Password Reset Successful - SKCET
+
+#     Your password has been successfully reset.
+
+#     If you did not perform this action, please contact our support team immediately.
+
+#     Log in to your account: {login_link}
+
+#     SKCET Team
+#     """
+
+#     # HTML version
+#     html_content = render_template('email/reset_password_confirmation_email.html', login_link=login_link)
+
+#     SendMail(subject, plain_text, email, html_content)
+
+# @StudentsBP.route('/resetkey/<ResetKey>', methods=['GET', 'POST'])
+# @NotLoggedInUser
+# def ResetPassword(ResetKey):
+#     if request.method == 'POST':
+#         NewPassword = request.form['password']
+            
+#         ResetData = mongo.db.PasswordReset.find_one({'ResetKey': ResetKey})
+
+#         if not ResetData:
+#             flash('Invalid or Expired reset link. Please initiate the password reset process again.', 'error')
+        
+#         PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$', NewPassword) else True
+
+#         if PasswordCheck:
+#             flash('Invalid password. It should be at least 8 characters and contain at least one lowercase letter, one uppercase letter, one special character, and one number.', 'error')
+#             return redirect(url_for('students.ResetPassword', ResetKey=ResetKey))
+        
+#         user = mongo.db.StudentDetails.find_one({'RollNumber': ResetData['RollNumber']})
+
+#         passwordH = SHA256.HashPassword(NewPassword, user["RollNumber"])
+
+#         mongo.db.StudentDetails.update_one({'RollNumber': ResetData['RollNumber']}, {'$set': {'Password': passwordH}})
+
+#         mongo.db.PasswordReset.delete_one({'ResetKey': ResetKey})
+        
+#         flash('Password reset successful. Try Loggin in.', 'info')
+#         return redirect(url_for('students.Login'))
+#     return render_template('students/ResetPassword.html', ResetKey=ResetKey)
+
+
+from flask import flash, redirect, url_for, render_template, request
+from Modules.Mail import SendMail
+from Modules import AES256, SHA256
+import re
+
 @StudentsBP.route('/forgotpassword', methods=['GET', 'POST'])
 @NotLoggedInUser
 def ForgotPassword():
@@ -192,6 +298,15 @@ def ForgotPassword():
             return redirect(url_for('students.ForgotPassword'))
 
         ResetKey = AES256.GenerateRandomString(32)
+        
+        # Store the reset key in the database
+        mongo.db.PasswordReset.insert_one({
+            'RollNumber': user['RollNumber'],
+            'ResetKey': ResetKey,
+            'CreatedAt': datetime.utcnow()
+        })
+
+        # Send password reset email
         PasswordResetMail(user["RollNumber"], user["Email"], ResetKey)
 
         flash('A Password Reset Link has been sent to your Email! Please check your Inbox and Follow the Instructions', 'info')
@@ -207,6 +322,7 @@ def ResetPassword(ResetKey):
 
         if not ResetData:
             flash('Invalid or Expired reset link. Please initiate the password reset process again.', 'error')
+            return redirect(url_for('students.ForgotPassword'))
         
         PasswordCheck = False if re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$', NewPassword) else True
 
@@ -222,9 +338,61 @@ def ResetPassword(ResetKey):
 
         mongo.db.PasswordReset.delete_one({'ResetKey': ResetKey})
         
-        flash('Password reset successful. Try Loggin in.', 'info')
+        # Send password reset confirmation email
+        PasswordResetConfirmationMail(user["Email"])
+        
+        flash('Password reset successful. You can now log in with your new password.', 'success')
         return redirect(url_for('students.Login'))
     return render_template('students/ResetPassword.html', ResetKey=ResetKey)
+
+def PasswordResetMail(roll_number, email, reset_key):
+    subject = "Reset Your Password - SKCET"
+    reset_link = url_for('students.ResetPassword', ResetKey=reset_key, _external=True)
+    
+    # Plain text version
+    plain_text = f"""
+    Reset Your Password - SKCET
+
+    We received a request to reset your password. Use the link below to set up a new password for your account:
+
+    {reset_link}
+
+    If you didn't request this, you can safely ignore this email.
+
+    This password reset link will expire in 24 hours.
+
+    SKCET Team
+    """
+
+    # HTML version
+    html_content = render_template('email/PasswordResetEmail.html', reset_link=reset_link)
+
+    SendMail(subject, plain_text, email, html_content)
+
+def PasswordResetConfirmationMail(email):
+    subject = "Password Reset Successful - SKCET"
+    login_link = url_for('students.Login', _external=True)
+    
+    # Plain text version
+    plain_text = f"""
+    Password Reset Successful - SKCET
+
+    Your password has been successfully reset.
+
+    If you did not perform this action, please contact our support team immediately.
+
+    Log in to your account: {login_link}
+
+    SKCET Team
+    """
+
+    # HTML version
+    html_content = render_template('email/ResetPasswordConfirmationEmail.html', login_link=login_link)
+
+    SendMail(subject, plain_text, email, html_content)
+
+
+
 
 @StudentsBP.route('/logout')
 @LoggedInUser

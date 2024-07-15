@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="h-full bg-white dark:bg-gray-900 dark:text-white">
+<html class="h-full bg-white">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,35 +16,35 @@
         <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                 <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-                <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-white">Sign up for an account</h2>
+                <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign up for an account</h2>
             </div>
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form class="space-y-6" method="POST" id="myForm" onsubmit="return validateForm()">
                     <div>
-                        <label for="name" class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Name</label>
+                        <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
                         <div class="mt-2">
-                            <input id="name" name="name" type="text" oninput="validateName()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-white/5 dark:text-white dark:ring-white/10">
+                            <input id="name" name="name" type="text" oninput="validateName()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         </div>
                         <div id="nameError" class="error"></div>
                     </div>
                     <div>
-                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Email address</label>
+                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                         <div class="mt-2">
-                            <input id="email" name="email" type="text" oninput="validateEmail()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-white/5 dark:text-white dark:ring-white/10">
+                            <input id="email" name="email" type="text" oninput="validateEmail()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         </div>
                         <div id="emailError" class="error"></div>
                     </div>
                     <div>
-                        <label for="password" class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Password</label>
+                        <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
                         <div class="mt-2">
-                            <input id="password" name="password" type="password" oninput="validatePassword()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-white/5 dark:text-white dark:ring-white/10">
+                            <input id="password" name="password" type="password" oninput="validatePassword()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         </div>
                         <div id="passwordError" class="error"></div>
                     </div>
                     <div>
-                        <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">Confirm Password</label>
+                        <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
                         <div class="mt-2">
-                            <input id="confirmPassword" name="confirmPassword" type="password" oninput="validatePassword()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-white/5 dark:text-white dark:ring-white/10">
+                            <input id="confirmPassword" name="confirmPassword" type="password" oninput="validatePassword()" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         </div>
                         <div id="confirmPasswordError" class="error"></div>
                         <div id="BackendError" class="error">
@@ -64,26 +64,20 @@
                     </div>
                 </form>
                 <p class="mt-10 text-center text-sm text-gray-500">
-                    Already have an account? <a href="{{url_for('students.Login')}}" class="font-semibold leading-6 text-indigo-600 dark:text-indigo-400">Sign in</a>
+                    Already have an account? <a href="{{url_for('students.Login')}}" class="font-semibold leading-6 text-indigo-600">Sign in</a>
                 </p> 
             </div>
         </div>
     </main>
-    <footer aria-labelledby="footer-heading" class="relative bottom-0 w-full text-black dark:bg-gray-900 dark:text-white">
+    <footer aria-labelledby="footer-heading" class="relative bottom-0 w-full text-black">
         <h2 id="footer-heading" class="sr-only">Footer</h2>
         <div class="mx-auto max-w-7xl px-6 pb-8 pt-4 lg:px-8">
-            <div class="border-t dark:border-white/10 pt-8 md:flex md:items-center md:justify-between">
+            <div class="border-t pt-8 md:flex md:items-center md:justify-between">
             <p class="mt-8 text-xs leading-5 text-gray-400 md:order-1 md:mt-0">&copy; &nbsp;2024 SKCET, Inc. All rights reserved.</p>
             </div>
         </div>
     </footer>
-    <script>
-        if (localStorage.theme === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-    </script>
+   
     <script>
         var hasClickedSubmit = false;
 
