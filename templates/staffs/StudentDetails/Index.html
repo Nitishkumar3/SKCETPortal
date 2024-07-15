@@ -1,0 +1,1187 @@
+<!doctype html>
+<html class="h-full bg-white">
+<head>
+  <title>Dashboard - SKCET</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.4/css/colReorder.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    body {
+        font-family: "Inter", sans-serif;
+    }
+    .time-grid {
+        display: grid;
+        grid-template-rows: repeat(90, minmax(10px, auto));
+    }
+    .event-grid {
+        display: grid;
+        grid-template-rows: repeat(90, minmax(10px, auto));
+        grid-template-columns: repeat(5, 1fr);
+    }
+    .event {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 2px;
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
+  </style>
+      <style>
+        .column-toggle {
+            margin-bottom: 10px;
+        }
+        .custom-select-width {
+            min-width: 120px;
+        }
+        .dataTables_wrapper {
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 12px;
+        }
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            float: none;
+            text-align: left;
+        }
+        .dataTables_wrapper .dataTables_length {
+            margin-right: 1rem;
+        }
+        .dataTables_wrapper .dataTables_filter {
+            margin-left: auto;
+        }
+        .custom-search-input,
+        .dataTables_length select,
+        .dataTables_filter input {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            color: #111827;
+            background-color: #fff;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-search-input {
+            width: 100%;
+            max-width: 20rem;
+        }
+        .custom-search-input:focus,
+        .dataTables_length select:focus,
+        .dataTables_filter input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        #studentTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        #studentTable th,
+        #studentTable td {
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        #studentTable th:last-child,
+        #studentTable td:last-child {
+            border-right: none;
+        }
+        #studentTable tr:last-child td {
+            border-bottom: none;
+        }
+        .dataTables_paginate {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .dataTables_paginate .paginate_button {
+            padding: 0.5rem 0.75rem;
+            margin: 0 0.25rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: #ffffff;
+            color: #4b5563;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+        }
+        .dataTables_paginate .paginate_button:hover {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+        .dataTables_paginate .paginate_button.current {
+            background-color: #4f46e5;
+            color: #ffffff;
+            border-color: #4f46e5;
+        }
+        .dataTables_paginate .paginate_button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .dataTables_paginate .paginate_button.previous,
+        .dataTables_paginate .paginate_button.next {
+            font-weight: 600;
+        }
+        .dataTables_wrapper .dataTables_scroll {
+            overflow-x: auto;
+        }
+        .dataTables_wrapper .dataTables_scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+        .dataTables_wrapper .dataTables_scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .dataTables_wrapper .dataTables_scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .dataTables_wrapper .dataTables_scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dataTables_wrapper .dataTables_scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #888 #f1f1f1;
+        }
+        @media (max-width: 640px) {
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                display: block;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .dataTables_wrapper .dataTables_filter {
+                margin-left: 0;
+            }
+        }
+        .pdf-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #E53E3E; /* Tailwind's red-600 */
+            padding: 0.5rem 0.75rem; /* Equivalent to px-3 py-2 */
+            font-size: 0.875rem; /* Equivalent to text-sm */
+            font-weight: 600; /* Equivalent to font-semibold */
+            color: #FFFFFF; /* Text white */
+            border-radius: 0.375rem; /* Equivalent to rounded-md */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-sm */
+            transition: background-color 0.2s ease-in-out;
+        }
+        .pdf-button:hover {
+            background-color: #C53030; /* Darker red for hover effect */
+        }
+        .pdf-button:focus-visible {
+            outline: 2px solid #E53E3E; /* Red outline for focus */
+            outline-offset: 2px;
+        }
+        .pdf-button i {
+            margin-right: 0.5rem; /* Equivalent to mr-2 */
+        }
+    </style>
+</head>
+<body class="h-full">
+  <div>
+    <!-- Mobile Menu -->
+    <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+      <div class="fixed inset-0 bg-gray-900/80"></div>
+      <div class="fixed inset-0 flex">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+            <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+              <span class="sr-only">Close sidebar</span>
+              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Sidebar component for mobile -->
+          <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 ring-1 ring-white/10">
+            <div class="flex h-16 shrink-0 items-center">
+              <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+            </div>
+            <nav class="flex flex-1 flex-col">
+              <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" class="space-y-1">
+                    <li>
+                      <a href="{{url_for('staffs.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-house fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Dashboard</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('staffs.StudentDetails')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Students Data</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('staffs.HackathonDetails')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Hackathon Data</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('staffs.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-light fa-calendar-days fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Time Table</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="mt-auto">
+                  <a href="{{url_for('staffs.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Static Sidebar for Desktop -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ring-1 ring-white/10">
+        <div class="flex h-16 shrink-0 items-center">
+          <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+        </div>
+        <nav class="flex flex-1 flex-col">
+          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+            <li>
+              <ul role="list" class="space-y-1">
+                <li>
+                  <a href="{{url_for('staffs.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-house fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('staffs.StudentDetails')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Students Data</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('staffs.HackathonDetails')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Hackathon Data</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('staffs.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-light fa-calendar-days fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Time Table</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="mt-auto">
+              <a href="{{url_for('staffs.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                <span class="flex items-center justify-center w-10">
+                  <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                </span>
+                <span class="ml-3">Logout</span>
+              </a>
+            </li> 
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="lg:pl-72">
+      <!-- Header -->
+      <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+          <span class="sr-only">Open sidebar</span>
+          <i class="fa-regular fa-bars fa-lg"></i>
+        </button>
+
+        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          <div class="relative flex flex-1"></div>
+          <div class="flex items-center gap-x-4 lg:gap-x-6">
+            
+            <!-- Separator -->
+            <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
+
+            <!-- Profile dropdown -->
+            <div class="relative">
+              <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">Open user menu</span>
+                <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt="">
+                <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">{{name}}</span>
+                  <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400"></i>
+                </span>
+              </button>
+              <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+                <a href="{{url_for('staffs.Logout')}}" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <main class="py-10">
+          <div class="px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+
+                <div class="border-b border-gray-200 pb-2 pt-2 px-4 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <h3 class="text-sm sm:text-base font-semibold leading-6 text-gray-900 mb-1">Student Details</h3>
+                        <p class="text-xs sm:text-sm text-gray-500">Select student details</p>
+                    </div>
+                    <div class="mt-3 sm:ml-4 sm:mt-0">
+                        <button id="exportButton" type="button" class="pdf-button">
+                            <i class="fas fa-file-export"></i>Export Selected as PDF
+                        </button>
+                    </div>      
+                </div>
+            
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 p-2 pt-4">
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="personal"><i class="fas fa-user mr-2"></i>&nbsp;&nbsp;&nbsp;Personal Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="government"><i class="fas fa-id-card mr-2"></i>&nbsp;&nbsp;&nbsp;Government IDs</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="address"><i class="fas fa-address-card mr-2"></i>&nbsp;&nbsp;&nbsp;Address</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="bank"><i class="fas fa-university"></i>&nbsp;&nbsp;&nbsp;Bank Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="parent"><i class="fas fa-users"></i>&nbsp;&nbsp;&nbsp;Parent Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="admission"><i class="fas fa-graduation-cap"></i>&nbsp;&nbsp;&nbsp;Admission Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="hostel"><i class="fas fa-home"></i>&nbsp;&nbsp;&nbsp;Hostel Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="status"><i class="fas fa-info-circle"></i>&nbsp;&nbsp;&nbsp;Status</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="health"><i class="fas fa-heartbeat"></i>&nbsp;&nbsp;&nbsp;Health Details</button>
+                    <button type="button"
+                        class="category-btn w-full rounded bg-indigo-50 px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+                        data-category="differently-abled"><i class="fas fa-wheelchair"></i>&nbsp;&nbsp;&nbsp;Differently Abled</button>
+            
+                </div>
+                <div id="modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                    <div class="fixed inset-0 z-10 overflow-y-auto">
+                        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                                <div>
+                                    <div class="mt-3 text-center sm:mt-5">
+                                        <h3 id="modal-title" class="text-base font-semibold leading-6 text-purple-900"></h3>
+                                        <div class="mt-2">
+                                            <div id="modal-checkboxes">
+                                                <!-- Checkboxes will be dynamically added here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                                    <button type="button" id="modal-save"
+                                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2">Save</button>
+                                    <button type="button" id="modal-cancel"
+                                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             
+                <div class="mt-8 flow-root">
+                    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                            <div class="overflow-hidden">
+                                <div class="flex flex-wrap items-center justify-between mb-6"> 
+                                    <div class="flex items-center">
+                                        <div class="dataTables_length" id="studentTable_length"></div>
+                                        <div class="dataTables_filter" id="studentTable_filter"></div>
+                                    </div>
+                                </div>
+                                <table id="studentTable" class="min-w-full divide-y divide-gray-300">
+                                    <thead>
+                                        <tr class="divide-x divide-gray-100">
+                                            <th scope="col"
+                                                class="py-3.5 px-2 text-center text-sm font-semibold text-gray-900 w-10">
+                                                <input type="checkbox" id="selectAll"
+                                                    class="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600">
+                                            </th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                S.No</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Roll Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                First Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Last Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Date of Birth</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Gender</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Mobile Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                College Email</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Personal Email</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Nationality</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Religion</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Community</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Sub Caste</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                First Graduate</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Permanent Address</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                City</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                State</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Postal Code</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Communication Address</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Communication City</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Communication State</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Communication Postal Code</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Aadhaar Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                PAN Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Voter ID</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Account Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Bank Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Bank Account Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                IFSC Code</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Branch</th>    
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Father Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Father Mobile</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Father Occupation</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Mother Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Mother Mobile</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Mother Occupation</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Guardian Name</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Guardian Mobile</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Date of Admission</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Admission Mode</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Course Type</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Degree</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Department</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Batch</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Section</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Lateral Entry</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Quota</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                TNEA Application Number</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Hosteller</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Hostel Type</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                PG Address</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Health Issues</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Health Issues Details</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Differently Abled</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Disability Percentage</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Disability Type</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                UDID</th>
+                                            <th scope="col"
+                                                class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                                Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 bg-white">
+                                        {% for student in students %}
+                                        <tr class="divide-x divide-gray-200">
+                                            <td class="whitespace-nowrap py-4 px-2 text-sm text-center">
+                                                <input type="checkbox"
+                                                    class="row-checkbox h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600"
+                                                    data-roll="{{ student['RollNumber'] }}">
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ loop.index }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['RollNumber']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['first_name']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['last_name']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['dob'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['gender'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['mobile_number']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['Email'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['personal_email']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['nationality'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['religion']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['community']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['sub_caste']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['first_graduate']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['permanent_address']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['city'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['state'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['postal_code'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['communication_address'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['communication_city']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['communication_state'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['communication_postal_code'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['aadhaar_number']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['pan_number']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['voter_id']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['account_number']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['bank_name']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['bank_account_name']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['ifsc_code']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['branch'] }}
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['father_name'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['father_mobile']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['father_occupation']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['mother_name'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['mother_mobile']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['mother_occupation']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['guardian_name']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['guardian_mobile'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['date_of_admission']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['admission_mode']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['course_type'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['degree'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['department']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['batch'] }}
+                                            </td>
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['section'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['lateral_entry']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['quota'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['tnea_application_number'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['hosteller']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['hostel_type'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['pg_address']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['health_issues']
+                                                }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['health_issues_details'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['differently_abled']
+                                                }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['disability_percentage'] }}</td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{
+                                                student['disability_type'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['udid'] }}
+                                            </td>
+                                            <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ student['status'] }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+            
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        
+            
+            
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/colreorder/1.5.4/js/dataTables.colReorder.min.js"></script>
+            
+            <script>
+                        $(document).ready(function () {
+                            var table = $('#studentTable').DataTable({
+                                responsive: true,
+                                "paging": true,
+                                "searching": true,
+                                "ordering": true,
+                                "order": [[1, 'asc']], // Order by S.No column initially
+                                "pageLength": 100,
+                                "columnDefs": [
+                                    { "orderable": false, "targets": 0 }, // Disable ordering for checkbox column
+                                    { "visible": true, "targets": [0, 1, 2, 3, 4, 5] }, // Show first 7 columns by default
+                                    { "visible": false, "targets": '_all' }
+                                ],
+                                "language": {
+                                    "lengthMenu": '<select class="custom-select-width">' +
+                                        '<option value="10">10 entries</option>' +
+                                        '<option value="25">25 entries</option>' +
+                                        '<option value="50">50 entries</option>' +
+                                        '<option value="100">100 entries</option>' +
+                                        '<option value="-1">All</option>' +
+                                        '</select>',
+                                    "search": "",
+                                    "searchPlaceholder": "Search..."
+                                },
+                                "dom": '<"flex flex-wrap items-center justify-between mb-6"<"flex items-center"l><"flex-shrink-0"f>>rt<"bottom"ip><"clear">',
+                                colReorder: {
+                                    fixedColumnsLeft: 2 // Keep 'Select' and 'S.No' columns fixed
+                                },
+                                "drawCallback": function (settings) {
+                                    // Update S.No column
+                                    this.api().column(1, { page: 'current' }).nodes().each(function (cell, i) {
+                                        cell.innerHTML = i + 1;
+                                    });
+                                }
+                            });
+            
+                            $('.dataTables_filter input').addClass('custom-search-input');
+            
+                            //selectAll checkboxes
+                            document.getElementById('selectAll').addEventListener('change', function () {
+                                var checkboxes = document.getElementsByClassName('row-checkbox');
+                                for (var checkbox of checkboxes) {
+                                    checkbox.checked = this.checked;
+                                }
+                            });
+            
+                            // Modal functionality
+                            const modal = document.getElementById('modal');
+                            const modalTitle = document.getElementById('modal-title');
+                            const modalCheckboxes = document.getElementById('modal-checkboxes');
+                            const modalSave = document.getElementById('modal-save');
+                            const modalCancel = document.getElementById('modal-cancel');
+            
+                            function showModal(category) {
+                                modalTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') + ' Details';
+                                modalCheckboxes.innerHTML = '';
+            
+                                const fieldset = document.createElement('fieldset');
+                                const legend = document.createElement('legend');
+                                legend.className = 'sr-only';
+                                legend.textContent = 'Column Visibility';
+                                fieldset.appendChild(legend);
+            
+                                const checkboxContainer = document.createElement('div');
+                                checkboxContainer.className = 'space-y-5';
+            
+                                categoryData[category].forEach(item => {
+                                    const isChecked = table.column(item.column).visible();
+            
+                                    const checkboxWrapper = document.createElement('div');
+                                    checkboxWrapper.className = 'relative flex items-start';
+            
+                                    checkboxWrapper.innerHTML = `
+                        <div class="flex h-6 items-center">
+                            <input id="${item.id}" name="${item.id}" type="checkbox" 
+                                class="h-4 w-4 rounded border-gray-400 text-indigo-600 focus:ring-indigo-600" 
+                                data-column="${item.column}" ${isChecked ? 'checked' : ''}>
+                        </div>
+                        <div class="ml-3 text-sm leading-6">
+                            <label for="${item.id}" class="font-medium text-gray-900">${item.label}</label>
+                        </div>
+                    `;
+            
+                                    checkboxContainer.appendChild(checkboxWrapper);
+                                });
+            
+                                fieldset.appendChild(checkboxContainer);
+                                modalCheckboxes.appendChild(fieldset);
+                                modal.classList.remove('hidden');
+                            }
+            
+                            function hideModal() {
+                                modal.classList.add('hidden');
+                            }
+            
+            
+                            function saveModalChanges() {
+                                const checkboxes = modalCheckboxes.querySelectorAll('input[type="checkbox"]');
+                                checkboxes.forEach(checkbox => {
+                                    const column = table.column(parseInt(checkbox.dataset.column));
+                                    column.visible(checkbox.checked);
+                                });
+                                hideModal();
+                                updateTableVisibility();
+                            }
+            
+                            function updateTableVisibility() {
+                                if (table.columns().visible().toArray().filter(Boolean).length === 2) { // Only 'Select' and 'S.No' columns visible
+                                    $('#studentTable').hide();
+                                    $('#studentTable_wrapper .dataTables_empty').parent().show();
+                                } else {
+                                    $('#studentTable').show();
+                                    $('#studentTable_wrapper .dataTables_empty').parent().hide();
+                                }
+                            }
+            
+                            // Event listeners for modal
+                            document.querySelectorAll('.category-btn').forEach(btn => {
+                                btn.addEventListener('click', () => showModal(btn.dataset.category));
+                            });
+            
+                            modalCancel.addEventListener('click', hideModal);
+                            modalSave.addEventListener('click', saveModalChanges);
+            
+                            // Export button click handler
+                            $('#exportButton').on('click', function () {
+                                var selectedColumns = [];
+                                var selectedRollNumbers = [];
+            
+                                // Get selected columns based on current table order
+                                table.columns().every(function (index) {
+                                    if (this.visible()) {
+                                        var columnName = $(this.header()).text().trim();
+                                        if (columnName !== 'Select' && columnName !== 'S.No') {
+                                            selectedColumns.push(columnName);
+                                        }
+                                    }
+                                });
+            
+                                // Get selected roll numbers
+                                $('.row-checkbox:checked').each(function () {
+                                    selectedRollNumbers.push($(this).data('roll'));
+                                });
+            
+                                // Check if any rows are selected
+                                if (selectedRollNumbers.length === 0) {
+                                    alert('Please select at least one row to export.');
+                                    return;
+                                }
+            
+                                // Prepare data for sending
+                                var data = {
+                                    columns: selectedColumns,
+                                    rollNumbers: selectedRollNumbers
+                                };
+            
+                                // Send data to /staff/ep endpoint
+                                $.ajax({
+                                    url: '/staff/ep',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(data),
+                                    xhrFields: {
+                                        responseType: 'blob'
+                                    },
+                                    success: function (response, status, xhr) {
+                                        var filename = "";
+                                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                            var matches = filenameRegex.exec(disposition);
+                                            if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                                        }
+            
+                                        var type = xhr.getResponseHeader('Content-Type');
+                                        var blob = new Blob([response], { type: type });
+            
+                                        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                                            // IE workaround
+                                            window.navigator.msSaveBlob(blob, filename);
+                                        } else {
+                                            var URL = window.URL || window.webkitURL;
+                                            var downloadUrl = URL.createObjectURL(blob);
+            
+                                            if (filename) {
+                                                var a = document.createElement("a");
+                                                if (typeof a.download === 'undefined') {
+                                                    window.location = downloadUrl;
+                                                } else {
+                                                    a.href = downloadUrl;
+                                                    a.download = filename;
+                                                    document.body.appendChild(a);
+                                                    a.click();
+                                                }
+                                            } else {
+                                                window.location = downloadUrl;
+                                            }
+            
+                                            setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Export error:', error);
+                                        console.error('Status:', status);
+                                        console.error('Response:', xhr.responseText);
+                                        alert('Error exporting data: ' + error + '\nStatus: ' + status + '\nResponse: ' + xhr.responseText);
+                                    }
+                                });
+                            });
+            
+                            // Update DataTable when a checkbox is clicked
+                            $('.row-checkbox').on('change', function () {
+                                table.draw();
+                            });
+            
+                            // Custom filtering function for checkbox
+                            $.fn.dataTable.ext.search.push(
+                                function (settings, data, dataIndex) {
+                                    var $row = $(table.row(dataIndex).node());
+                                    var $checkbox = $row.find('.row-checkbox');
+                                    return !$checkbox.prop('checked') || $checkbox.is(':visible');
+                                }
+                            );
+            
+                            // Always show 'Select' and 'S.No' columns
+                            table.columns([0, 1]).visible(true, false);
+            
+                            // Initial check for table visibility
+                            updateTableVisibility();
+            
+                            // Update column visibility toggles when columns are reordered
+                            table.on('column-reorder', function (e, settings, details) {
+                                $('.toggle-vis').each(function () {
+                                    var columnIndex = parseInt($(this).attr('data-column'));
+                                    if (columnIndex !== details.from && columnIndex !== details.to) {
+                                        return;
+                                    }
+            
+                                    if (columnIndex === details.from) {
+                                        $(this).attr('data-column', details.to);
+                                    } else if (columnIndex === details.to) {
+                                        $(this).attr('data-column', details.from);
+                                    }
+                                });
+                            });
+            
+                            const categoryData = {
+                personal: [
+                    { id: 'rollNumber', label: 'Roll Number', column: 2 },
+                    { id: 'firstName', label: 'First Name', column: 3 },
+                    { id: 'lastName', label: 'Last Name', column: 4 },
+                    { id: 'dateOfBirth', label: 'Date of Birth', column: 5 },
+                    { id: 'gender', label: 'Gender', column: 6 },
+                    { id: 'mobileNumber', label: 'Mobile Number', column: 7 },
+                    { id: 'email', label: 'College Email', column: 8 },
+                    { id: 'personalEmail', label: 'Personal Email', column: 9 },
+                    { id: 'nationality', label: 'Nationality', column: 10 },
+                    { id: 'religion', label: 'Religion', column: 11 },
+                    { id: 'community', label: 'Community', column: 12 },
+                    { id: 'subCaste', label: 'Sub Caste', column: 13 },
+                    { id: 'firstGraduate', label: 'First Graduate', column: 14 },
+                ],
+                address: [
+                    { id: 'permanentAddress', label: 'Permanent Address', column: 15 },
+                    { id: 'city', label: 'City', column: 16 },
+                    { id: 'state', label: 'State', column: 17 },
+                    { id: 'postalCode', label: 'Postal Code', column: 18 },
+                    { id: 'communicationAddress', label: 'Communication Address', column: 19 },
+                    { id: 'communicationCity', label: 'Communication City', column: 20 },
+                    { id: 'communicationState', label: 'Communication State', column: 21 },
+                    { id: 'communicationPostalCode', label: 'Communication Postal Code', column: 22 },
+                ],
+                government: [
+                    { id: 'aadhaar', label: 'Aadhaar Number', column: 23 },
+                    { id: 'panNumber', label: 'PAN Number', column: 24 },
+                    { id: 'voterId', label: 'Voter ID', column: 25 },
+                ],
+                bank: [
+                    { id: 'accountNumber', label: 'Account Number', column: 26 },
+                    { id: 'bankName', label: 'Bank Name', column: 27 },
+                    { id: 'bankAccountName', label: 'Bank Account Name', column: 28 },
+                    { id: 'ifscCode', label: 'IFSC Code', column: 29 },
+                    { id: 'branch', label: 'Branch', column: 30 },
+                ],
+                parent: [
+                    { id: 'fatherName', label: 'Father Name', column: 31 },
+                    { id: 'fatherMobile', label: 'Father Mobile', column: 32 },
+                    { id: 'fatherOccupation', label: 'Father Occupation', column: 33 },
+                    { id: 'motherName', label: 'Mother Name', column: 34 },
+                    { id: 'motherMobile', label: 'Mother Mobile', column: 35 },
+                    { id: 'motherOccupation', label: 'Mother Occupation', column: 36 },
+                    { id: 'guardianName', label: 'Guardian Name', column: 37 },
+                    { id: 'guardianMobile', label: 'Guardian Mobile', column: 38 },
+                ],
+                admission: [
+                    { id: 'dateOfAdmission', label: 'Date of Admission', column: 39 },
+                    { id: 'admissionMode', label: 'Admission Mode', column: 40 },
+                    { id: 'courseType', label: 'Course Type', column: 41 },
+                    { id: 'degree', label: 'Degree', column: 42 },
+                    { id: 'department', label: 'Department', column: 43 },
+                    { id: 'batch', label: 'Batch', column: 44 },
+                    { id: 'section', label: 'Section', column: 45 },
+                    { id: 'lateralEntry', label: 'Lateral Entry', column: 46 },
+                    { id: 'quota', label: 'Quota', column: 47 },
+                    { id: 'tneaApplicationNumber', label: 'TNEA Application Number', column: 48 },
+                ],
+                hostel: [
+                    { id: 'hosteller', label: 'Hosteller', column: 49 },
+                    { id: 'hostelType', label: 'Hostel Type', column: 50 },
+                    { id: 'pgAddress', label: 'PG Address', column: 51 },
+                ],
+                health: [
+                    { id: 'healthIssues', label: 'Health Issues', column: 52 },
+                    { id: 'healthIssuesDetails', label: 'Health Issues Details', column: 53 },
+                ],
+                'differently-abled': [
+                    { id: 'differentlyAbled', label: 'Differently Abled', column: 54 },
+                    { id: 'disabilityPercentage', label: 'Disability Percentage', column: 55 },
+                    { id: 'disabilityType', label: 'Disability Type', column: 56 },
+                    { id: 'udid', label: 'UDID', column: 57 },
+                ],
+                status: [
+                    { id: 'status', label: 'Status', column: 58 },
+                ],
+            };
+                        });
+            
+            
+            </script>
+        
+            </div>
+          </div>
+      </main>
+
+    </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-menu');
+
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        button.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+      }
+    });
+  });
+</script>
+<script>
+  // Open Mobile Menu
+  var closeButton = document.getElementById('OpenButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
+
+  // Close Mobile Menu
+  var closeButton = document.getElementById('CloseButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
+</script>
+</body>
+</html>

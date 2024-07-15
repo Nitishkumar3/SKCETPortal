@@ -80,6 +80,34 @@ def PasswordResetMail(rollnumber, email, ResetKey):
         mongo.db.PasswordReset.insert_one({'RollNumber': rollnumber, 'ResetKey': ResetKey, 'CreatedAt': currenttime, 'ExpirationTime': currenttime + timedelta(hours=6)})
         mongo.db.PasswordReset.create_index('ExpirationTime', expireAfterSeconds=0)
 
+def ToShortCode(Degree, Department):
+    if Degree == "B.Tech" and Department == "Information Technology (IT)":
+        return "IT"
+    elif Degree == "B.E." and Department == "Civil Engineering":
+        return "Civil"
+    elif Degree == "B.E." and Department == "Computer Science and Design (CSD)":
+        return "CSD"
+    elif Degree == "B.E." and Department == "Computer Science and Engineering (CSE)":
+        return "CSE"
+    elif Degree == "M.Tech Integrated" and Department == "Computer Science and Engineering (CSE)":
+        return "MTechCSE"
+    elif Degree == "B.E." and Department == "Cyber Security (CSY)":
+        return "CSY"
+    elif Degree == "B.E." and Department == "Electrical and Electronics Engineering (EEE)":
+        return "EEE"
+    elif Degree == "B.E." and Department == "Electronics and Communication Engineering (ECE)":
+        return "ECE"
+    elif Degree == "B.E." and Department == "Mechanical Engineering":
+        return "Mech"
+    elif Degree == "B.E." and Department == "Mechatronics Engineering":
+        return "Mect"
+    elif Degree == "B.Tech" and Department == "Artificial Intelligence And Data Science (AI & DS)":
+        return "AIDS"
+    elif Degree == "B.Tech" and Department == "Computer Science and Business Systems (CSBS)":
+        return "CSBS"
+    else:
+        return ""
+
 @StudentsBP.route('/register', methods=['GET', 'POST'])
 @NotLoggedInUser
 def Registration():
@@ -702,7 +730,6 @@ def Timetable():
 
     return render_template('students/Timetable/Index.html', name=name, schedule=schedule)
 
-
 @StudentsBP.route('/hackathons')
 @LoggedInUser
 def Hackathons():
@@ -734,13 +761,16 @@ def HackathonsAdd():
         name += " " + user["last_name"]
 
     if request.method == 'POST':
-
         Characters = string.ascii_letters + string.digits
         ID = ''.join(random.choice(Characters) for _ in range(8))
         
         TeamDetails = request.form.getlist('TeamDetails[]')
         FormattedTeamDetails = [item.upper() for item in TeamDetails]
-        
+
+        LeaderEmail = str(FormattedTeamDetails[0].lower()) + "@skcet.ac.in"
+        Leader = mongo.db.StudentDetails.find_one({'Email': LeaderEmail})
+        DeptShortCode = ToShortCode(Leader["degree"], Leader["department"])
+
         EventData = {
             'ID': ID,
             'EventName': request.form['EventName'],
@@ -751,7 +781,8 @@ def HackathonsAdd():
             'TeamDetails': FormattedTeamDetails,
             'Status': request.form['Status'],
             'EventPhotos': [],
-            'CertificatePhotos': []
+            'CertificatePhotos': [],
+            'Department': DeptShortCode, 
         }
 
         if EventData['Mode'] == 'Offline':
@@ -809,7 +840,11 @@ def EditHackathon(id):
     if request.method == 'POST':
         TeamDetails = request.form.getlist('TeamDetails[]')
         FormattedTeamDetails = [item.upper() for item in TeamDetails]
-       
+
+        LeaderEmail = str(FormattedTeamDetails[0].lower()) + "@skcet.ac.in"
+        Leader = mongo.db.StudentDetails.find_one({'Email': LeaderEmail})
+        DeptShortCode = ToShortCode(Leader["degree"], Leader["department"])
+
         EventData = {
             'EventName': request.form['EventName'],
             'TeamName': request.form['TeamName'],
@@ -818,6 +853,7 @@ def EditHackathon(id):
             'Mode': request.form['Mode'],
             'TeamDetails': FormattedTeamDetails,
             'Status': request.form['Status'],
+            'Department': DeptShortCode,
         }
        
         if EventData['Mode'] == 'Offline':
