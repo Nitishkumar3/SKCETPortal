@@ -62,7 +62,7 @@ def IsUserVerified(UserName):
 
 def PasswordResetMail(UserName, email, ResetKey):
     subject = "SKCET - Password Reset"
-    link = "http://localhost:5000/resetkey/" + str(ResetKey)
+    link = "http://localhost:5000/staff/resetkey/" + str(ResetKey)
     body = "Password Reset Code: " + str(ResetKey) + f" {link}"
     if Mail.SendMail(subject, body, email):
         currenttime = datetime.utcnow()
