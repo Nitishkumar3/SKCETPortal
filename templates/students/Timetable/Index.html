@@ -57,7 +57,7 @@
                 <li>
                   <ul role="list" class="space-y-1">
                     <li>
-                      <a href="{{url_for('students.Dashboard')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                      <a href="{{url_for('students.Dashboard')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
                         <span class="flex items-center justify-center w-10">
                           <i class="fa-regular fa-house fa-lg"></i>
                         </span>
@@ -81,7 +81,7 @@
                       </a>
                     </li>
                     <li>
-                      <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                      <a href="{{url_for('students.Timetable')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
                         <span class="flex items-center justify-center w-10">
                           <i class="fa-light fa-calendar-days fa-lg"></i>
                         </span>
@@ -116,7 +116,7 @@
             <li>
               <ul role="list" class="space-y-1">
                 <li>
-                  <a href="{{url_for('students.Dashboard')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                  <a href="{{url_for('students.Dashboard')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
                     <span class="flex items-center justify-center w-10">
                       <i class="fa-regular fa-house fa-lg"></i>
                     </span>
@@ -140,7 +140,7 @@
                   </a>
                 </li>
                 <li>
-                  <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                  <a href="{{url_for('students.Timetable')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
                     <span class="flex items-center justify-center w-10">
                       <i class="fa-light fa-calendar-days fa-lg"></i>
                     </span>
@@ -194,50 +194,10 @@
           </div>
         </div>
       </div>
-      
+    
       <main class="py-10">
           <div class="px-4 sm:px-6 lg:px-8">
             <div class="max-w-7xl mx-auto">
-
-              <!-- Stats Section -->
-              <section class="mb-12">
-                  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                          <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
-                              <dt>
-                                  <div class="absolute rounded-md bg-indigo-500 p-3">
-                                      <i class="fa-light fa-graduation-cap text-white text-2xl w-6 h-6 flex items-center justify-center"></i>
-                                  </div>
-                                  <p class="ml-16 truncate text-sm font-medium text-gray-500">Total Students</p>
-                              </dt>
-                              <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                                  <p class="text-2xl font-semibold text-gray-900">55</p>
-                              </dd>
-                              <div class="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
-                                  <div class="text-sm">
-                                      <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">View all<span class="sr-only"> Avg. Open Rate stats</span></a>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
-                              <dt>
-                                  <div class="absolute rounded-md bg-indigo-500 p-3">
-                                      <i class="fa-light fa-clipboard-user text-white text-2xl w-6 h-6 flex items-center justify-center"></i>
-                                  </div>
-                                  <p class="ml-16 truncate text-sm font-medium text-gray-500">Total Staffs</p>
-                              </dt>
-                              <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                                  <p class="text-2xl font-semibold text-gray-900">10</p>
-                              </dd>
-                              <div class="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
-                                  <div class="text-sm">
-                                      <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">View all<span class="sr-only"> Total Subscribers stats</span></a>
-                                  </div>
-                              </div>
-                          </div>
-                      </dl>
-                  </div>
-              </section>
 
               <!-- Timetable Section -->
               <section class="mb-12">
@@ -286,108 +246,10 @@
                 </div>
               </section>
         
-              <!-- Announcements Section -->
-              <section class="mb-12">
-                <div class="mx-auto max-w-2xl text-center">
-                  <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Announcements</h2>
-                </div>
-                <div class="mt-6 flow-root">
-                  <ul role="list" class="-mb-8">
-                    {% for announcement in announcements %}
-                    <li>
-                      <div class="relative pb-8">
-                        {% if not loop.last %}
-                        <span class="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                        {% endif %}
-                        <div class="relative flex items-start space-x-3">
-                          <div class="relative">
-                            <img class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400 ring-8 ring-white" src="{{ announcement.dp_url }}" alt="{{ announcement.name }}">
-                            <span class="absolute -bottom-0.5 -right-1 rounded-tl bg-white px-0.5 py-px">
-                              <i class="fa-solid fa-comment text-gray-400"></i>
-                            </span>
-                          </div>
-                          <div class="min-w-0 flex-1">
-                            <div>
-                              <div class="text-sm">
-                                <a href="#" class="font-medium text-gray-900">{{ announcement.name }}</a>
-                              </div>
-                              <p class="mt-0.5 text-sm text-gray-500">Announced {{ announcement.time|time_since }}</p>
-                            </div>
-                            <div class="mt-2 text-sm text-gray-700">
-                              <p>{{ announcement.info }}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                    {% endfor %}
-                  </ul>
-                </div>
-                <div class="mt-16 flex justify-center">
-                  <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                    View More
-                    <i class="fa-solid fa-right-long ml-2"></i>
-                  </a>
-                </div>
-              </section>
-        
-              <!-- Latest News Section -->
-              <section class="bg-white py-12 sm:py-16">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                  <div class="mx-auto max-w-2xl text-center">
-                    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Latest News</h2>
-                  </div>
-                  <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-                    {% for article in articles %}
-                    <article class="flex flex-col items-start justify-between">
-                      <div class="relative w-full">
-                        <img src="{{ article.cover_pic }}" alt="" class="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]">
-                        <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
-                      </div>
-                      <div class="max-w-xl">
-                        <div class="mt-8 flex items-center gap-x-4 text-xs">
-                          <time datetime="{{ article.date }}" class="text-gray-500">{{ article.date }}</time>
-                          <a href="#" class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">{{ article.department }}</a>
-                        </div>
-                        <div class="group relative">
-                          <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                            <a href="#">
-                              <span class="absolute inset-0"></span>
-                              {{ article.title }}
-                            </a>
-                          </h3>
-                          <p class="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{{ article.description }}</p>
-                        </div>
-                        <div class="relative mt-8 flex items-center gap-x-4">
-                          <img src="{{ article.author_pic }}" alt="" class="h-10 w-10 rounded-full bg-gray-100">
-                          <div class="text-sm leading-6">
-                            <p class="font-semibold text-gray-900">
-                              <a href="#">
-                                <span class="absolute inset-0"></span>
-                                {{ article.author }}
-                              </a>
-                            </p>
-                            <p class="text-gray-600">{{ article.designation }}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                    {% endfor %}
-                  </div>
-                  <div class="mt-16 flex justify-center">
-                    <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                      View More
-                      <i class="fa-solid fa-right-long ml-2"></i>
-                    </a>
-                  </div>
-                </div>
-              </section>
-        
             </div>
           </div>
       </main>
-
-    </div>
+  </div>
 </div>
 
 <script>

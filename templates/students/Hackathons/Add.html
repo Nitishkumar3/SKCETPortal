@@ -1,119 +1,388 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-full bg-white dark:bg-gray-900 dark:text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Details - SKCET</title>
+    <title>Add Hackathon Details - SKCET</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">       
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: "Inter", sans-serif;
+        }
         .Hidden { display: none; }
     </style>
-</head>
-<body>
-    <h1>Event Details Form</h1>
-    <form action="{{ url_for('students.HackathonsAdd') }}" method="POST" enctype="multipart/form-data">
-        <label for="EventName">Event Name:</label>
-        <input type="text" id="EventName" name="EventName" required><br><br>
+    <link href="/static/outputfull2.css" rel="stylesheet">
+  </head>
+<body class="h-full">
+  <div>
+    <!-- Mobile Menu -->
+    <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+      <div class="fixed inset-0 bg-gray-900/80"></div>
+      <div class="fixed inset-0 flex">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+            <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+              <span class="sr-only">Close sidebar</span>
+              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <label for="ProjectTitle">Project Title:</label>
-        <input type="text" id="ProjectTitle" name="ProjectTitle" required><br><br>
-
-        <label for="TeamName">Team Name:</label>
-        <input type="text" id="TeamName" name="TeamName" required><br><br>
-
-        <label for="Date">Date:</label>
-        <input type="date" id="Date" name="Date" required><br><br>
-        
-        <label for="Mode">Mode:</label>
-        <select id="Mode" name="Mode" required>
-            <option value="Online">Online</option>
-            <option value="Offline">Offline</option>
-        </select><br><br>
-        
-        <div id="VenueContainer" class="Hidden">
-            <label for="Venue">Venue:</label>
-            <input type="text" id="Venue" name="Venue"><br><br>
-        </div>
-        
-        <label for="TeamDetails">Team Details:</label>
-        <div id="TeamDetailsContainer">
-            <input type="text" name="TeamDetails[]" value="{{ RollNumber }}" readonly required>
-            <button type="button" id="AddTeamDetail">Add More</button>
-        </div><br><br>
-        
-        <label for="Status">Status:</label>
-        <select id="Status" name="Status" required>
-            <option value="Registered">Registered</option>
-            <option value="EventCompleted">Event Completed</option>
-        </select><br><br>
-        
-        <div id="CompletedEventFields" class="Hidden">
-            <label for="ParticipatedWon">Participated/Won:</label>
-            <select id="ParticipatedWon" name="ParticipatedWon">
-                <option value="Participated">Participated</option>
-                <option value="Won">Won</option>
-            </select><br><br>
-            
-            <div id="WonFields" class="Hidden">
-                <label for="Position">Position:</label>
-                <input type="text" id="Position" name="Position"><br><br>
-                
-                <label for="PrizeAmount">Prize Amount:</label>
-                <input type="number" id="PrizeAmount" name="PrizeAmount"><br><br>
+          <!-- Sidebar component for mobile -->
+          <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 ring-1 ring-white/10">
+            <div class="flex h-16 shrink-0 items-center">
+              <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
             </div>
-            
-            <label for="EventPhotos">Event Photos (max 5):</label>
-            <input type="file" id="EventPhotos" name="EventPhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
-            
-            <label for="CertificatePhotos">Certificate Photos (max 5):</label>
-            <input type="file" id="CertificatePhotos" name="CertificatePhotos" multiple accept=".png,.jpg,.jpeg,.pdf"><br><br>
+            <nav class="flex flex-1 flex-col">
+              <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" class="space-y-1">
+                    <li>
+                      <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-house fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Dashboard</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Hackathons</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-light fa-calendar-days fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Time Table</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="mt-auto">
+                  <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
-        
-        <input type="submit" value="Submit">
-    </form>
+      </div>
+    </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#Mode').change(function() {
-                if ($(this).val() === 'Offline') {
-                    $('#VenueContainer').removeClass('Hidden');
-                    $('#Venue').prop('required', true);
-                } else {
-                    $('#VenueContainer').addClass('Hidden');
-                    $('#Venue').prop('required', false);
-                }
-            });
+    <!-- Static Sidebar for Desktop -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ring-1 ring-white/10">
+        <div class="flex h-16 shrink-0 items-center">
+          <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+        </div>
+        <nav class="flex flex-1 flex-col">
+          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+            <li>
+              <ul role="list" class="space-y-1">
+                <li>
+                  <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-house fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Profile</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Hackathons</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-light fa-calendar-days fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Time Table</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="mt-auto">
+              <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                <span class="flex items-center justify-center w-10">
+                  <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                </span>
+                <span class="ml-3">Logout</span>
+              </a>
+            </li> 
+          </ul>
+        </nav>
+      </div>
+    </div>
 
-            $('#AddTeamDetail').click(function() {
-                var newInput = $('<div><input type="text" name="TeamDetails[]" required><button type="button" class="RemoveTeamDetail">Remove</button></div>');
-                $('#TeamDetailsContainer').append(newInput);
-            });
+    <div class="lg:pl-72">
+      <!-- Header -->
+      <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+          <span class="sr-only">Open sidebar</span>
+          <i class="fa-regular fa-bars fa-lg"></i>
+        </button>
 
-            $(document).on('click', '.RemoveTeamDetail', function() {
-                $(this).parent().remove();
-            });
+        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          <div class="relative flex flex-1"></div>
+          <div class="flex items-center gap-x-4 lg:gap-x-6">
+            
+            <!-- Separator -->
+            <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
 
-            $('#Status').change(function() {
-                if ($(this).val() === 'EventCompleted') {
-                    $('#CompletedEventFields').removeClass('Hidden');
-                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos').prop('required', true);
-                } else {
-                    $('#CompletedEventFields').addClass('Hidden');
-                    $('#WonFields').addClass('Hidden');
-                    $('#ParticipatedWon, #EventPhotos, #CertificatePhotos, #Position, #PrizeAmount').prop('required', false);
-                }
-            });
+            <!-- Profile dropdown -->
+            <div class="relative">
+              <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">Open user menu</span>
+                <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt="">
+                <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">{{name}}</span>
+                  <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400"></i>
+                </span>
+              </button>
+              <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+                <a href="{{url_for('students.Logout')}}" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            $('#ParticipatedWon').change(function() {
-                if ($(this).val() === 'Won') {
-                    $('#WonFields').removeClass('Hidden');
-                    $('#Position, #PrizeAmount').prop('required', true);
-                } else {
-                    $('#WonFields').addClass('Hidden');
-                    $('#Position, #PrizeAmount').prop('required', false);
-                }
-            });
-        });
-    </script>
+      <main class="py-10">
+          <div class="px-4 sm:px-6 lg:px-8">
+              <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+                  <h2 class="font-semibold text-gray-900 py-2 text-xl">Hackathon Details</h2>  
+                  <hr class="py-2">
+                  <form action="{{ url_for('students.HackathonsAdd') }}" method="POST" enctype="multipart/form-data">
+                      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 md:col-span-2">
+                          <div class="sm:col-span-3">
+                              <label for="EventName" class="block text-sm font-medium leading-6 text-gray-900">Event Name</label>
+                              <div class="mt-2">
+                                  <input type="text" name="EventName" id="Event-Name" required class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                              <p class="mt-2 text-sm text-red-600" id="event-name-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="ProjectTitle" class="block text-sm font-medium leading-6 text-gray-900">Project Title</label>
+                              <div class="mt-2">
+                                  <input type="text" id="ProjectTitle" name="ProjectTitle" required class="project-title block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                              <p class="mt-2 text-sm text-red-600" id="ProjectTitle-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="TeamName" class="block text-sm font-medium leading-6 text-gray-900">Team Name</label>
+                              <div class="mt-2">
+                                  <input type="text" id="TeamName" name="TeamName" required class="team-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                              <p class="mt-2 text-sm text-red-600" id="Team-name-error"></p>
+                          </div>
+                          <div class="sm:col-span-3">
+                              <label for="Date" class="block text-sm font-medium leading-6 text-gray-900">Date</label>
+                              <div class="mt-2">
+                                  <input type="date" id="Date" name="Date" required class="date block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                              <p class="mt-2 text-sm text-red-600" id="first-name-error"></p>
+                          </div>
+                          
+                          <div class="sm:col-span-3">
+                              <label for="Mode" class="block text-sm font-medium leading-6 text-gray-900">Mode</label>
+                              <div class="mt-2">
+                                  <select class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="Mode" name="Mode" required>
+                                      <option value="Online">Online</option>
+                                      <option value="Offline">Offline</option>
+                                  </select>
+                              </div>
+                          </div>
+                          
+                          <div id="VenueContainer" class="hidden sm:col-span-3">
+                              <label for="Venue" class="block text-sm font-medium leading-6 text-gray-900">Venue</label>
+                              <div class="mt-2">
+                                  <input type="text" id="Venue" name="Venue" class="venue-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                              </div>
+                          </div>
+                          
+                          <div class="sm:col-span-6" id="TeamDetailsContainer">
+                              <label for="TeamDetails" class="block text-sm font-medium leading-6 text-gray-900">Team Details</label>
+                              <div class="mt-2 flex items-center">
+                                  <input type="text" name="TeamDetails[]" required value="{{ RollNumber }}" readonly class="team-details w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                  <button type="button" id="AddTeamDetail" class="ml-2 p-2 text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                                      <i class="fas fa-plus"></i>
+                                  </button>
+                              </div>
+                          </div>
+                          
+                          <div class="sm:col-span-3">
+                              <label for="Status" class="block text-sm font-medium leading-6 text-gray-900">Status</label>
+                              <div class="mt-2">
+                                  <select id="Status" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" name="Status" required>
+                                      <option value="Registered">Registered</option>
+                                      <option value="EventCompleted">Event Completed</option>
+                                  </select>
+                              </div>
+                          </div>
+      
+                          <div id="CompletedEventFields" class="hidden sm:col-span-3">
+                              <label for="ParticipatedWon" class="block text-sm font-medium leading-6 text-gray-900">Participated/Won</label>
+                              <div class="mt-2">
+                                  <select id="ParticipatedWon" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" name="ParticipatedWon">
+                                      <option value="Participated">Participated</option>
+                                      <option value="Won">Won</option>
+                                  </select>
+                              </div>
+                          </div>
+      
+                          <div id="WonFields" class="hidden sm:col-span-6">
+                              <div class="grid grid-cols-2 gap-4">
+                                  <div>
+                                      <label class="block text-sm font-medium leading-6 text-gray-900" for="Position">Position</label>
+                                      <div class="mt-2">
+                                          <input type="text" id="Position" name="Position" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <label class="block text-sm font-medium leading-6 text-gray-900" for="PrizeAmount">Prize Amount</label>
+                                      <div class="mt-2">
+                                          <input type="number" id="PrizeAmount" name="PrizeAmount" class="block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+      
+                          <div id="PhotoFields" class="hidden sm:col-span-6">
+                              <div class="grid grid-cols-2 gap-4">
+                                  <div>
+                                      <label class="block text-sm font-medium leading-6 text-gray-900" for="EventPhotos">Event Photos (max 3)</label>
+                                      <input type="file" id="EventPhotos" name="EventPhotos" multiple accept=".png,.jpg,.jpeg,.pdf">
+                                  </div>
+                                  <div>
+                                      <label class="block text-sm font-medium leading-6 text-gray-900" for="CertificatePhotos">Certificate Photos (max 3)</label>
+                                      <input type="file" id="CertificatePhotos" name="CertificatePhotos" multiple accept=".png,.jpg,.jpeg,.pdf">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="mt-6 flex items-center justify-end gap-x-6">
+                          <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Submit</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </main>
+    </div>
+  </div>
+<script>
+$(document).ready(function() {
+    $('#Mode').change(function() {
+        if ($(this).val() === 'Offline') {
+            $('#VenueContainer').removeClass('hidden');
+            $('#Venue').prop('required', true);
+        } else {
+            $('#VenueContainer').addClass('hidden');
+            $('#Venue').prop('required', false);
+        }
+    });
+
+    $('#AddTeamDetail').click(function() {
+        var newInput = $(
+            '<div class="flex items-center mt-2">' +
+                '<input type="text" class="team-details w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" name="TeamDetails[]" required>' +
+                '<button type="button" class="RemoveTeamDetail ml-2 p-2 text-red-600 hover:text-red-800 focus:outline-none">' +
+                    '<i class="fas fa-times"></i>' +
+                '</button>' +
+            '</div>'
+        );
+        $('#TeamDetailsContainer').append(newInput);
+    });
+
+    $(document).on('click', '.RemoveTeamDetail', function() {
+        $(this).parent().remove();
+    });
+
+    $('#Status').change(function() {
+        if ($(this).val() === 'EventCompleted') {
+            $('#CompletedEventFields').removeClass('hidden');
+            $('#PhotoFields').removeClass('hidden');
+            $('#ParticipatedWon, #EventPhotos, #CertificatePhotos').prop('required', true);
+        } else {
+            $('#CompletedEventFields').addClass('hidden');
+            $('#WonFields').addClass('hidden');
+            $('#PhotoFields').addClass('hidden');
+            $('#ParticipatedWon, #EventPhotos, #CertificatePhotos, #Position, #PrizeAmount').prop('required', false);
+        }
+    });
+
+    $('#ParticipatedWon').change(function() {
+        if ($(this).val() === 'Won') {
+            $('#WonFields').removeClass('hidden');
+            $('#Position, #PrizeAmount').prop('required', true);
+        } else {
+            $('#WonFields').addClass('hidden');
+            $('#Position, #PrizeAmount').prop('required', false);
+        }
+    });
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('user-menu-button');
+    const menu = document.getElementById('user-menu');
+
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+      menu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!button.contains(event.target) && !menu.contains(event.target)) {
+        button.setAttribute('aria-expanded', 'false');
+        menu.classList.add('hidden');
+      }
+    });
+  });
+</script>
+<script>
+  // Open Mobile Menu
+  var closeButton = document.getElementById('OpenButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'block';});
+
+  // Close Mobile Menu
+  var closeButton = document.getElementById('CloseButton');
+  var mmenuElement = document.querySelector('.mmenu');
+  closeButton.addEventListener('click', function() {mmenuElement.style.display = 'none';});
+</script>
 </body>
 </html>
