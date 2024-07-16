@@ -212,6 +212,11 @@ announcements = [
     },
 ]  
 
+@StaffsBP.route('/')
+@LoggedInUser
+def Index():
+    return redirect(url_for('staffs.Index'))
+
 @StaffsBP.route('/dashboard')
 @LoggedInUser
 def Dashboard():
