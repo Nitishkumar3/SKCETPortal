@@ -823,8 +823,15 @@ def HackathonsAdd():
 @StudentsBP.route('/hackathon/<string:id>')
 @LoggedInUser
 def ViewHackathon(id):
+    RollNumber = session['RollNumber'].upper()
+    rollnumber = session['RollNumber']
+    user = mongo.db.StudentDetails.find_one({'RollNumber': rollnumber})
+    name = user["first_name"]
+    if user.get("last_name"):
+        name += " " + user["last_name"]
+
     hackathon = mongo.db.HackathonParticipations.find_one({"_id": ObjectId(id)})
-    return render_template('students/Hackathons/View.html', hackathon=hackathon)
+    return render_template('students/Hackathons/View.html', hackathon=hackathon, name = name)
 
 @StudentsBP.route('/hackathons/edit/<string:id>', methods=['GET', 'POST'])
 @LoggedInUser

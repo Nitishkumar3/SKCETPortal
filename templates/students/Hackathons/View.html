@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Hackathon - SKCET</title>
-    <link rel="icon" href="/static/favicon.png" type="image/png">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: "Inter", sans-serif;
+        }
         .photo-container {
             display: flex;
             flex-wrap: wrap;
@@ -17,69 +20,317 @@
             object-fit: cover;
         }
     </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link href="https://fa6p.pages.dev/css/all.min.css" rel="stylesheet">       
+<link rel="icon" href="/static/favicon.png" type="image/png">   
+<style>
+    .Hidden { display: none; }
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Hackathon Details</h1>
-    <dl>
-        <dt>Event Name</dt>
-        <dd>{{ hackathon.get('EventName', 'N/A') }}</dd>
+<body class="h-full">
 
-        <dt>Project Title</dt>
-        <dd>{{ hackathon.get('ProjectTitle', 'N/A') }}</dd>
+  <div>
+    <!-- Mobile Menu -->
+    <div class="relative z-50 lg:hidden mmenu" role="dialog" style="display: none;" aria-modal="true">
+      <div class="fixed inset-0 bg-gray-900/80"></div>
+      <div class="fixed inset-0 flex">
+        <div class="relative mr-16 flex w-full max-w-xs flex-1">
+          <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+            <button type="button" class="-m-2.5 p-2.5" id="CloseButton">
+              <span class="sr-only">Close sidebar</span>
+              <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        <dt>Team Name</dt>
-        <dd>{{ hackathon.get('TeamName', 'N/A') }}</dd>
+          <!-- Sidebar component for mobile -->
+          <div class="flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 bg-indigo-600 ring-1 ring-white/10">
+            <div class="flex h-16 shrink-0 items-center">
+              <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+            </div>
+            <nav class="flex flex-1 flex-col">
+              <ul role="list" class="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" class="space-y-1">
+                    <li>
+                      <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-house fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Dashboard</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Hackathons</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                        <span class="flex items-center justify-center w-10">
+                          <i class="fa-light fa-calendar-days fa-lg"></i>
+                        </span>
+                        <span class="ml-3">Time Table</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="mt-auto">
+                  <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <dt>Date</dt>
-        <dd>{{ hackathon.get('Date', 'N/A') }}</dd>
+    <!-- Static Sidebar for Desktop -->
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4 ring-1 ring-white/10">
+        <div class="flex h-16 shrink-0 items-center">
+          <img class="h-8 w-auto" src="/static/logo-white.png" alt="Your Company">
+        </div>
+        <nav class="flex flex-1 flex-col">
+          <ul role="list" class="flex flex-1 flex-col gap-y-7">
+            <li>
+              <ul role="list" class="space-y-1">
+                <li>
+                  <a href="{{url_for('students.Dashboard')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-house fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Dashboard</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Profile')}}" class="text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Profile</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Hackathons')}}" class="bg-indigo-700 text-white group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-regular fa-calendar-circle-user fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Hackathons</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{url_for('students.Timetable')}}" class="text-white hover:text-white hover:bg-indigo-700 group flex items-center rounded-md p-2 text-sm leading-6 font-semibold">
+                    <span class="flex items-center justify-center w-10">
+                      <i class="fa-light fa-calendar-days fa-lg"></i>
+                    </span>
+                    <span class="ml-3">Time Table</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="mt-auto">
+              <a href="{{url_for('students.Logout')}}" class="group flex items-center rounded-md p-2 text-sm font-semibold leading-6 hover:bg-indigo-700 text-white">
+                <span class="flex items-center justify-center w-10">
+                  <i class="fa-solid fa-right-from-bracket fa-lg"></i>
+                </span>
+                <span class="ml-3">Logout</span>
+              </a>
+            </li> 
+          </ul>
+        </nav>
+      </div>
+    </div>
 
-        <dt>Mode</dt>
-        <dd>{{ hackathon.get('Mode', 'N/A') }}</dd>
+    <div class="lg:pl-72">
+      <!-- Header -->
+      <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" id="OpenButton">
+          <span class="sr-only">Open sidebar</span>
+          <i class="fa-regular fa-bars fa-lg"></i>
+        </button>
 
-        <dt>Venue</dt>
-        <dd>{{ hackathon.get('Venue', 'N/A') }}</dd>
+        <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          <div class="relative flex flex-1"></div>
+          <div class="flex items-center gap-x-4 lg:gap-x-6">
+            
+            <!-- Separator -->
+            <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"></div>
 
-        <dt>Team Details</dt>
-        <dd>{{ ', '.join(hackathon.get('TeamDetails', [])) or 'N/A' }}</dd>
+            <!-- Profile dropdown -->
+            <div class="relative">
+              <button type="button" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">Open user menu</span>
+                <img class="h-8 w-8 rounded-full bg-gray-50" src="../../assets/profile.png" alt="">
+                <span class="hidden lg:flex lg:items-center">
+                  <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">{{name}}</span>
+                  <i class="fa-regular fa-angle-down ml-2 h-5 w-5 text-gray-400"></i>
+                </span>
+              </button>
+              <div class="hidden absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1" id="user-menu">
+                <a href="{{url_for('students.Logout')}}" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="user-menu-item-1">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <dt>Status</dt>
-        <dd>{{ hackathon.get('Status', 'N/A') }}</dd>
+          <main class="py-10">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="px-8 sm:px-16 md:px-32 lg:px-48">
+                    <h2 class="font-semibold text-gray-900 py-2 text-xl">Hackathon Details</h2>  
+                    <hr class="py-2">
 
-        <dt>Participated/Won</dt>
-        <dd>{{ hackathon.get('ParticipatedWon', 'N/A') }}</dd>
+                    <form action="{{ url_for('students.HackathonsAdd') }}" method="POST" enctype="multipart/form-data">
 
-        <dt>Position</dt>
-        <dd>{{ hackathon.get('Position', 'N/A') }}</dd>
+                        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 md:col-span-2">
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Event Name</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('EventName', 'N/A') }}</dd>
+                                  </div>
+                            </div>
 
-        <dt>Prize Amount</dt>
-        <dd>{{ hackathon.get('PrizeAmount', 'N/A') }}</dd>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Project Title</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('ProjectTitle', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+    
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Team Name</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('TeamName', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Date</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('Date', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Mode</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('Mode', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Venue</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('Venue', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Team Details</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ ', '.join(hackathon.get('TeamDetails', [])) or 'N/A' }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Status</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('Status', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Participated/Won</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('ParticipatedWon', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Position</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('Position', 'N/A') }}</dd>
+                                  </div>
+                            </div>
+   
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Prize Amount</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ hackathon.get('PrizeAmount', 'N/A') }}</dd>
+                                  </div>
+                            </div>
 
-        <dt>Event Photos</dt>
-        <dd>
-            {% if hackathon.get('EventPhotos') %}
-                <div class="photo-container">
-                    {% for photo in hackathon['EventPhotos'] %}
-                        <img src="{{ photo }}" alt="Event Photo" class="photo">
-                    {% endfor %}
-                </div>
-            {% else %}
-                N/A
-            {% endif %}
-        </dd>
+                            <br>
+                            <br>
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Event Photos</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{% if hackathon.get('EventPhotos') %}
+                                        <div class="photo-container">
+                                            {% for photo in hackathon['EventPhotos'] %}
+                                                <img src="{{ photo }}" alt="Event Photo" class="photo">
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}</dd>
+                                  </div>
+                            </div>
+   
+                            <div class="sm:col-span-3">
+                                <dl>
+                                  <dt class="block text-sm font-medium leading-6 text-gray-900">Certificate Photos</dt>
+                                  <div class="mt-2">        
+                                      <dd class="event-name block w-full p-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{% if hackathon.get('CertificatePhotos') %}
+                                        <div class="photo-container">
+                                            {% for photo in hackathon['CertificatePhotos'] %}
+                                                <img src="{{ photo }}" alt="Certificate Photo" class="photo">
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}</dd>
+                                  </div>
+                            </div>
+   
 
-        <dt>Certificate Photos</dt>
-        <dd>
-            {% if hackathon.get('CertificatePhotos') %}
-                <div class="photo-container">
-                    {% for photo in hackathon['CertificatePhotos'] %}
-                        <img src="{{ photo }}" alt="Certificate Photo" class="photo">
-                    {% endfor %}
-                </div>
-            {% else %}
-                N/A
-            {% endif %}
-        </dd>
+
+      
+
+       
     </dl>
-    <a href="{{ url_for('students.Hackathons') }}">Back to List</a>
+                        </div>
+
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <a href="{{ url_for('students.Hackathons') }}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+                </div>
+</main>
 </body>
 </html>
