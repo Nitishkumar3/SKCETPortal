@@ -748,6 +748,8 @@ def Hackathons():
     for result in results:
         if '_id' in result:
             result['_id'] = str(result['_id'])
+
+    print(results)
     return render_template('students/Hackathons/Index.html', hackathons=results, RollNumber=RollNumber, name = name)
 
 @StudentsBP.route('/hackathons/add', methods=['GET', 'POST'])
